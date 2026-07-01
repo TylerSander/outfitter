@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/TylerSander/outfitter/catalog/catalog.schema.json",
+  "title": "Outfitter Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "catalogVersion", "updatedAt", "categories", "apps"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "catalogVersion": { "type": "string" },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "order"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "icon": { "type": "string" },
+          "order": { "type": "integer" }
+        }
+      }
+    },
+    "apps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "shortDescription", "description", "category", "homepage", "license", "sources", "tags", "featured", "popularity"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "name": { "type": "string" },
+          "shortDescription": { "type": "string", "maxLength": 80 },
+          "description": { "type": "string" },
+          "category": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "homepage": { "type": "string", "format": "uri" },
+          "license": { "type": "string" },
+          "icon": { "type": "string" },
+          "tags": { "type": "array", "items": { "type": "string" } },
+          "featured": { "type": "boolean" },
+          "popularity": { "type": "integer", "minimum": 0, "maximum": 100 },
+          "sources": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["windows", "macos", "linux"],
+            "properties": {
+              "windows": { "$ref": "#/$defs/sourceList" },
+              "macos": { "$ref": "#/$defs/sourceList" },
+              "linux": { "$ref": "#/$defs/sourceList" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sourceList": {
+      "description": "Ordered list of install sources for one platform; empty array = app not available on this platform. First source whose manager is present on the machine wins.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["manager", "id", "official"],
+        "properties": {
+          "manager": { "enum": ["winget", "brew", "brew-cask", "flatpak", "apt", "dnf", "pacman"] },
+          "id": { "type": "string" },
+          "official": {
+            "type": "boolean",
+            "description": "true when the listing is published/verified by the app's publisher; false for community-maintained packagings (UI shows a 'community package' badge)"
+          },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

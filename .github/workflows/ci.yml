@@ -35,6 +35,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Validate catalog
+        run: node scripts/validate-catalog.mjs
+
       - name: Frontend typecheck + build
         run: pnpm build
 
