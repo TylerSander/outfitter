@@ -94,6 +94,10 @@ async function runOp(app: CatalogApp, source: Source, kind: OpKind): Promise<voi
   }
 
   emit({ appId, kind, phase: "progress", percent: 100 });
+  if (kind === "install") {
+    // Mirrors the real backend: apps auto-launch right after installing.
+    emit({ appId, kind, phase: "log", line: "Installed — launching now…" });
+  }
   emit({ appId, kind, phase: "done" });
 }
 

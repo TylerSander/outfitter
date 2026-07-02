@@ -66,6 +66,41 @@ impl Provider for Brew {
         args.push(package_id.to_string());
         args
     }
+
+    fn launch(&self, package_id: &str) -> Result<bool, String> {
+        if !self.cask {
+            // Formulae are CLI tools; there is nothing to open.
+            return Ok(false);
+        }
+        let info = super::run_capture(&[
+            &brew_program(),
+            "info",
+            "--cask",
+            "--json=v2",
+            package_id,
+        ])?;
+        let Some(app_name) = app_artifact(&info) else {
+            // pkg-based casks and the like have no .app artifact to open.
+            return Ok(false);
+        };
+        super::spawn_detached(&super::argv(&["open", "-a", &app_name]))?;
+        Ok(true)
+    }
+}
+
+/// First `.app` artifact name from `brew info --cask --json=v2` output.
+fn app_artifact(json_text: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(json_text).ok()?;
+    let cask = value.get("casks")?.as_array()?.first()?;
+    let artifacts = cask.get("artifacts")?.as_array()?;
+    artifacts.iter().find_map(|artifact| {
+        artifact
+            .get("app")?
+            .as_array()?
+            .iter()
+            .find_map(|entry| entry.as_str())
+            .map(str::to_string)
+    })
 }
 
 /// `brew list --versions` prints "name version [version...]" per line; brew
@@ -118,5 +153,18 @@ mod tests {
         assert_eq!(packages.len(), 1);
         assert_eq!(packages[0].id, "no-version-cask");
         assert_eq!(packages[0].version, "");
+    }
+
+    #[test]
+    fn app_artifact_found_in_cask_info_json() {
+        let json = r#"{"casks":[{"token":"firefox","artifacts":[{"zap":[{"trash":[]}]},{"app":["Firefox.app"]}]}]}"#;
+        assert_eq!(app_artifact(json).as_deref(), Some("Firefox.app"));
+    }
+
+    #[test]
+    fn app_artifact_absent_for_pkg_casks_and_bad_json() {
+        let json = r#"{"casks":[{"token":"x","artifacts":[{"pkg":["x.pkg"]}]}]}"#;
+        assert_eq!(app_artifact(json), None);
+        assert_eq!(app_artifact("not json"), None);
     }
 }

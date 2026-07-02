@@ -51,6 +51,13 @@ pub trait Provider: Send + Sync {
     fn pre_install_args(&self) -> Option<Vec<String>> {
         None
     }
+
+    /// Open the app after a successful install. `Ok(true)` = launched,
+    /// `Ok(false)` = launching is not supported for this manager/package.
+    fn launch(&self, package_id: &str) -> Result<bool, String> {
+        let _ = package_id;
+        Ok(false)
+    }
 }
 
 static REGISTRY: OnceLock<Vec<Box<dyn Provider>>> = OnceLock::new();
@@ -162,6 +169,27 @@ pub(crate) fn run_capture(argv: &[&str]) -> Result<String, String> {
         }
         Err(msg)
     }
+}
+
+/// Spawn argv fully detached, for launching installed apps. A reaper thread
+/// waits on the child so it never lingers as a zombie.
+pub(crate) fn spawn_detached(argv: &[String]) -> Result<(), String> {
+    let (program, args) = argv
+        .split_first()
+        .ok_or_else(|| "empty command".to_string())?;
+    let mut cmd = Command::new(program);
+    cmd.args(args)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null());
+    configure_command(&mut cmd);
+    let mut child = cmd
+        .spawn()
+        .map_err(|e| format!("failed to launch {program}: {e}"))?;
+    std::thread::spawn(move || {
+        let _ = child.wait();
+    });
+    Ok(())
 }
 
 /// First non-empty line of `<program> --version`-style output.

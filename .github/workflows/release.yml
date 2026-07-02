@@ -1,7 +1,9 @@
 name: Release
 
 # Triggered by pushing a semver tag, e.g. `git tag v0.1.0 && git push origin v0.1.0`.
-# Builds all platform artifacts and attaches them to a draft GitHub Release.
+# A single create-release job makes the draft first; the build matrix uploads into
+# it by id (parallel jobs creating releases by tag race and produce duplicate
+# drafts — happened on v0.1.0). Publish the draft manually after checking assets.
 # Linux builds intentionally run on ubuntu-22.04 (oldest supported glibc baseline).
 
 on:
@@ -9,7 +11,53 @@ on:
     tags: ['v*']
 
 jobs:
+  create-release:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    outputs:
+      release_id: ${{ steps.create.outputs.result }}
+    steps:
+      - uses: actions/github-script@v7
+        id: create
+        with:
+          script: |
+            const tag = context.ref.replace('refs/tags/', '')
+            const v = tag.replace(/^v/, '')
+            const dl = (f) => `https://github.com/${context.repo.owner}/${context.repo.repo}/releases/download/${tag}/${f}`
+            const body = [
+              `**Outfitter** installs software through your OS's own trusted package manager (winget, Homebrew, Flatpak) — it never hosts or redistributes third-party installers.`,
+              ``,
+              `## 🍎 Mac`,
+              `- **Apple Silicon (M1–M4):** [Outfitter_${v}_aarch64.dmg](${dl(`Outfitter_${v}_aarch64.dmg`)})`,
+              `- **Intel:** [Outfitter_${v}_x64.dmg](${dl(`Outfitter_${v}_x64.dmg`)})`,
+              ``,
+              `Not yet code-signed: after installing, allow it via **System Settings → Privacy & Security → Open Anyway**.`,
+              ``,
+              `## 🪟 Windows`,
+              `- **Installer (recommended):** [Outfitter_${v}_x64-setup.exe](${dl(`Outfitter_${v}_x64-setup.exe`)})`,
+              `- MSI (managed installs): [Outfitter_${v}_x64_en-US.msi](${dl(`Outfitter_${v}_x64_en-US.msi`)})`,
+              ``,
+              `Not yet code-signed: if SmartScreen appears, click **More info → Run anyway**. Requires winget (preinstalled on Windows 11 / updated Windows 10).`,
+              ``,
+              `## 🐧 Linux`,
+              `- **AppImage (any distro):** [Outfitter_${v}_amd64.AppImage](${dl(`Outfitter_${v}_amd64.AppImage`)})`,
+              `- **Debian/Ubuntu:** [Outfitter_${v}_amd64.deb](${dl(`Outfitter_${v}_amd64.deb`)})`,
+              `- **Fedora:** [Outfitter-${v}-1.x86_64.rpm](${dl(`Outfitter-${v}-1.x86_64.rpm`)})`,
+            ].join('\n')
+            const { data } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tag,
+              name: `Outfitter ${tag}`,
+              body,
+              draft: true,
+              prerelease: false,
+            })
+            return data.id
+
   build:
+    needs: create-release
     permissions:
       contents: write
     strategy:
@@ -57,9 +105,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: 'Outfitter v__VERSION__'
-          releaseBody: 'Download the installer for your platform from the assets below.'
-          releaseDraft: true
-          prerelease: false
+          releaseId: ${{ needs.create-release.outputs.release_id }}
           args: ${{ matrix.args }}

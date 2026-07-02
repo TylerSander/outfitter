@@ -54,6 +54,11 @@ impl Provider for Flatpak {
             FLATHUB_REPO,
         ]))
     }
+
+    fn launch(&self, package_id: &str) -> Result<bool, String> {
+        super::spawn_detached(&super::argv(&["flatpak", "run", package_id]))?;
+        Ok(true)
+    }
 }
 
 fn parse_list(output: &str) -> Vec<InstalledPackage> {

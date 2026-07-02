@@ -128,9 +128,27 @@ fn run_job(app: &AppHandle, job: &Job) {
         OpKind::Uninstall => provider.uninstall_args(&job.package_id),
     };
     match run_streamed(app, job, &argv) {
-        Ok(()) => emit(app, &OpEvent::new(&job.app_id, job.kind, "done")),
+        Ok(()) => {
+            if job.kind == OpKind::Install {
+                launch_after_install(app, job, provider);
+            }
+            emit(app, &OpEvent::new(&job.app_id, job.kind, "done"));
+        }
         Err(e) => fail(app, job, e),
     }
+}
+
+/// After a successful install the app opens immediately, so the user lands in
+/// what they just installed. Emitted as a log line BEFORE "done" so frontend
+/// op cleanup cannot miss it.
+fn launch_after_install(app: &AppHandle, job: &Job, provider: &'static dyn providers::Provider) {
+    let mut event = OpEvent::new(&job.app_id, job.kind, "log");
+    event.line = Some(match provider.launch(&job.package_id) {
+        Ok(true) => "Installed — launching now…".to_string(),
+        Ok(false) => "Installed. Find it in your applications menu.".to_string(),
+        Err(e) => format!("Installed, but couldn't auto-launch: {e}"),
+    });
+    emit(app, &event);
 }
 
 /// Spawn argv, stream stdout+stderr as throttled log events, wait for exit.
