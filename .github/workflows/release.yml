@@ -1,9 +1,11 @@
 name: Release
 
 # Triggered by pushing a semver tag, e.g. `git tag v0.1.0 && git push origin v0.1.0`.
-# A single create-release job makes the draft first; the build matrix uploads into
-# it by id (parallel jobs creating releases by tag race and produce duplicate
-# drafts — happened on v0.1.0). Publish the draft manually after checking assets.
+# Flow: verify (lint/test/clippy/catalog) -> create-release draft -> build matrix
+# uploads by release id -> updater-manifest builds latest.json from signed assets.
+# Publish the draft manually after checking assets.
+# Third-party actions are pinned to commit SHAs (this job holds the updater
+# signing key; a mutable action tag could be repointed to exfiltrate it).
 # Linux builds intentionally run on ubuntu-22.04 (oldest supported glibc baseline).
 
 on:
@@ -11,14 +13,44 @@ on:
     tags: ['v*']
 
 jobs:
+  # Gate: a tag push skips the on-push/PR CI, so re-run the same checks here.
+  # Nothing is signed or published unless these pass.
+  verify:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - name: Install Linux build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 11
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
+        with:
+          components: clippy
+      - uses: swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
+        with:
+          workspaces: src-tauri
+      - run: pnpm install --frozen-lockfile
+      - run: node scripts/validate-catalog.mjs
+      - run: pnpm build
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
+      - run: cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
+
   create-release:
+    needs: verify
     runs-on: ubuntu-22.04
     permissions:
       contents: write
     outputs:
       release_id: ${{ steps.create.outputs.result }}
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         id: create
         with:
           script: |
@@ -74,7 +106,7 @@ jobs:
             args: ''
     runs-on: ${{ matrix.platform }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
 
       - name: Install Linux build deps
         if: matrix.platform == 'ubuntu-22.04'
@@ -82,26 +114,26 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: 11
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
           cache: pnpm
 
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@4be7066ada62dd38de10e7b70166bc74ed198c30 # stable
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - uses: swatinem/rust-cache@v2
+      - uses: swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32 # v2
         with:
           workspaces: src-tauri
 
       - run: pnpm install --frozen-lockfile
 
-      - uses: tauri-apps/tauri-action@v1
+      - uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
@@ -125,7 +157,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const releaseId = Number('${{ needs.create-release.outputs.release_id }}')
