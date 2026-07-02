@@ -1,0 +1,249 @@
+// Outfitter accounts API - Cloudflare Worker.
+//
+// Auth model: pure resource server. The desktop app signs users in through
+// hosted AuthKit (PKCE public client, system browser) and sends the AuthKit
+// access token as a Bearer header. This Worker verifies it against WorkOS's
+// JWKS and trusts only the verified claims - it holds no WorkOS secret.
+//
+// AuthKit access tokens carry NO `aud` claim by default, so verification is
+// signature + issuer + expiry. `sub` (WorkOS user id) keys all data. Role and
+// permission claims only exist for organization members; Outfitter users are
+// standalone consumers, so authorization here is ownership plus a local
+// is_admin flag.
+
+import { Hono } from "hono";
+import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
+
+type Env = {
+  DB: D1Database;
+  WORKOS_CLIENT_ID: string;
+  WORKOS_ISSUER: string;
+};
+
+type Vars = { sub: string };
+
+const app = new Hono<{ Bindings: Env; Variables: Vars }>();
+
+// One JWKS fetcher per isolate; jose caches keys and re-fetches on rotation.
+let jwks: ReturnType<typeof createRemoteJWKSet> | null = null;
+const getJwks = (clientId: string) => {
+  jwks ??= createRemoteJWKSet(
+    new URL(`https://api.workos.com/sso/jwks/${clientId}`),
+  );
+  return jwks;
+};
+
+const LIMITS = {
+  title: 200,
+  url: 2048,
+  note: 2000,
+  appId: 100,
+  linksPerUser: 500,
+};
+
+app.get("/healthz", (c) => c.json({ ok: true, service: "outfitter-api" }));
+
+// --- auth middleware ---
+app.use("/v1/*", async (c, next) => {
+  const header = c.req.header("Authorization") ?? "";
+  const token = header.startsWith("Bearer ") ? header.slice(7) : null;
+  if (!token) {
+    return c.json({ error: "missing bearer token" }, 401);
+  }
+  let payload: JWTPayload;
+  try {
+    ({ payload } = await jwtVerify(token, getJwks(c.env.WORKOS_CLIENT_ID), {
+      issuer: c.env.WORKOS_ISSUER,
+      clockTolerance: 30,
+    }));
+  } catch {
+    return c.json({ error: "invalid or expired token" }, 401);
+  }
+  if (typeof payload.sub !== "string" || payload.sub === "") {
+    return c.json({ error: "token has no subject" }, 401);
+  }
+  c.set("sub", payload.sub);
+  await c.env.DB.prepare(
+    "INSERT INTO users (sub) VALUES (?) ON CONFLICT(sub) DO NOTHING",
+  )
+    .bind(payload.sub)
+    .run();
+  await next();
+});
+
+const logEvent = (
+  db: D1Database,
+  sub: string,
+  action: string,
+  meta: unknown,
+) =>
+  db
+    .prepare("INSERT INTO events (user_sub, action, meta) VALUES (?, ?, ?)")
+    .bind(sub, action, JSON.stringify(meta))
+    .run();
+
+// --- account ---
+app.get("/v1/me", async (c) => {
+  const sub = c.get("sub");
+  const user = await c.env.DB.prepare(
+    "SELECT sub, email, is_admin, first_seen_at FROM users WHERE sub = ?",
+  )
+    .bind(sub)
+    .first();
+  const linkCount = await c.env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM links WHERE user_sub = ?",
+  )
+    .bind(sub)
+    .first<{ n: number }>();
+  return c.json({ user, linkCount: linkCount?.n ?? 0 });
+});
+
+app.get("/v1/events", async (c) => {
+  const { results } = await c.env.DB.prepare(
+    "SELECT action, meta, created_at FROM events WHERE user_sub = ? ORDER BY id DESC LIMIT 50",
+  )
+    .bind(c.get("sub"))
+    .all();
+  return c.json({ events: results });
+});
+
+// --- saved links / apps ---
+app.get("/v1/links", async (c) => {
+  const { results } = await c.env.DB.prepare(
+    "SELECT id, kind, url, title, note, app_id, created_at, updated_at FROM links WHERE user_sub = ? ORDER BY created_at DESC, id",
+  )
+    .bind(c.get("sub"))
+    .all();
+  return c.json({ links: results });
+});
+
+type LinkBody = {
+  kind?: unknown;
+  url?: unknown;
+  title?: unknown;
+  note?: unknown;
+  appId?: unknown;
+};
+
+function validateLink(body: LinkBody): { error: string } | {
+  kind: "link" | "app";
+  url: string | null;
+  title: string;
+  note: string | null;
+  appId: string | null;
+} {
+  const kind = body.kind === "app" ? "app" : body.kind === "link" ? "link" : null;
+  if (kind === null) return { error: "kind must be 'link' or 'app'" };
+  const title = typeof body.title === "string" ? body.title.trim() : "";
+  if (title === "" || title.length > LIMITS.title) {
+    return { error: `title required, at most ${LIMITS.title} chars` };
+  }
+  let url: string | null = null;
+  if (body.url !== undefined && body.url !== null) {
+    if (typeof body.url !== "string" || body.url.length > LIMITS.url) {
+      return { error: "url must be a string" };
+    }
+    try {
+      const parsed = new URL(body.url);
+      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+        return { error: "url must be http(s)" };
+      }
+      url = body.url;
+    } catch {
+      return { error: "url is not a valid URL" };
+    }
+  }
+  const note =
+    typeof body.note === "string" && body.note.trim() !== ""
+      ? body.note.slice(0, LIMITS.note)
+      : null;
+  const appId =
+    typeof body.appId === "string" && /^[a-z0-9-]{1,100}$/.test(body.appId)
+      ? body.appId
+      : null;
+  if (kind === "link" && url === null) return { error: "links need a url" };
+  if (kind === "app" && appId === null) {
+    return { error: "apps need an appId (catalog id, kebab-case)" };
+  }
+  return { kind, url, title, note, appId };
+}
+
+app.post("/v1/links", async (c) => {
+  const sub = c.get("sub");
+  let body: LinkBody;
+  try {
+    body = await c.req.json<LinkBody>();
+  } catch {
+    return c.json({ error: "body must be JSON" }, 400);
+  }
+  const parsed = validateLink(body);
+  if ("error" in parsed) return c.json({ error: parsed.error }, 400);
+
+  const count = await c.env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM links WHERE user_sub = ?",
+  )
+    .bind(sub)
+    .first<{ n: number }>();
+  if ((count?.n ?? 0) >= LIMITS.linksPerUser) {
+    return c.json({ error: `limit of ${LIMITS.linksPerUser} saved items reached` }, 409);
+  }
+
+  const id = crypto.randomUUID();
+  await c.env.DB.prepare(
+    "INSERT INTO links (id, user_sub, kind, url, title, note, app_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+  )
+    .bind(id, sub, parsed.kind, parsed.url, parsed.title, parsed.note, parsed.appId)
+    .run();
+  await logEvent(c.env.DB, sub, "link.created", { id, kind: parsed.kind, title: parsed.title });
+  return c.json({ id }, 201);
+});
+
+app.patch("/v1/links/:id", async (c) => {
+  const sub = c.get("sub");
+  const id = c.req.param("id");
+  const existing = await c.env.DB.prepare(
+    "SELECT kind, url, title, note, app_id FROM links WHERE id = ? AND user_sub = ?",
+  )
+    .bind(id, sub)
+    .first<{ kind: string; url: string | null; title: string; note: string | null; app_id: string | null }>();
+  if (!existing) return c.json({ error: "not found" }, 404);
+
+  let body: LinkBody;
+  try {
+    body = await c.req.json<LinkBody>();
+  } catch {
+    return c.json({ error: "body must be JSON" }, 400);
+  }
+  // Merge patch over existing, then re-validate the whole record.
+  const parsed = validateLink({
+    kind: body.kind ?? existing.kind,
+    url: body.url ?? existing.url,
+    title: body.title ?? existing.title,
+    note: body.note ?? existing.note,
+    appId: body.appId ?? existing.app_id,
+  });
+  if ("error" in parsed) return c.json({ error: parsed.error }, 400);
+
+  await c.env.DB.prepare(
+    "UPDATE links SET kind = ?, url = ?, title = ?, note = ?, app_id = ?, updated_at = datetime('now') WHERE id = ? AND user_sub = ?",
+  )
+    .bind(parsed.kind, parsed.url, parsed.title, parsed.note, parsed.appId, id, sub)
+    .run();
+  await logEvent(c.env.DB, sub, "link.updated", { id });
+  return c.json({ ok: true });
+});
+
+app.delete("/v1/links/:id", async (c) => {
+  const sub = c.get("sub");
+  const id = c.req.param("id");
+  const result = await c.env.DB.prepare(
+    "DELETE FROM links WHERE id = ? AND user_sub = ?",
+  )
+    .bind(id, sub)
+    .run();
+  if (result.meta.changes === 0) return c.json({ error: "not found" }, 404);
+  await logEvent(c.env.DB, sub, "link.deleted", { id });
+  return c.json({ ok: true });
+});
+
+export default app;

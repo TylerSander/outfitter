@@ -1,0 +1,20 @@
+# Outfitter accounts API.
+# Deploy target: api.outfitter.tylersander.me (Cloudflare zone: tylersander.me).
+# The route + real database_id get filled in at first deploy (needs a
+# Cloudflare API token with Workers + D1 + zone DNS scopes).
+name = "outfitter-api"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "outfitter"
+database_id = "00000000-0000-0000-0000-000000000000" # placeholder; replaced at first deploy (local dev ignores it)
+
+[vars]
+# Client id is public by design (it ships inside the desktop app);
+# the Worker holds NO WorkOS secret - it only verifies JWTs via JWKS.
+WORKOS_CLIENT_ID = "client_01KWGH1817P2XJQY5D2ANQZCJ7"
+WORKOS_ISSUER = "https://api.workos.com/user_management/client_01KWGH1817P2XJQY5D2ANQZCJ7"
+
+# routes = [{ pattern = "api.outfitter.tylersander.me", custom_domain = true }]

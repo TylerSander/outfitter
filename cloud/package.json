@@ -1,0 +1,22 @@
+{
+  "name": "outfitter-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Outfitter accounts API - Cloudflare Worker (AuthKit-authenticated saved links)",
+  "scripts": {
+    "dev": "wrangler dev --local",
+    "deploy": "wrangler deploy",
+    "db:local": "wrangler d1 execute outfitter --local --file=./schema.sql",
+    "db:remote": "wrangler d1 execute outfitter --remote --file=./schema.sql",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "jose": "^5.9.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260601.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  }
+}
