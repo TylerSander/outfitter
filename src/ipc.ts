@@ -22,6 +22,7 @@ export interface IpcBackend {
   uninstallApp(app: CatalogApp, source: Source): Promise<void>;
   onOpEvent(cb: (e: OpEvent) => void): Promise<() => void>;
   openExternal(url: string): Promise<void>;
+  getAppVersion(): Promise<string>;
 }
 
 export function isTauri(): boolean {
@@ -52,6 +53,10 @@ async function makeTauriBackend(): Promise<IpcBackend> {
     openExternal: async (url) => {
       const { openUrl } = await import("@tauri-apps/plugin-opener");
       await openUrl(url);
+    },
+    getAppVersion: async () => {
+      const { getVersion } = await import("@tauri-apps/api/app");
+      return getVersion();
     },
   };
 }
@@ -113,4 +118,9 @@ export function onOpEvent(cb: (e: OpEvent) => void): () => void {
 /** Open a URL with the OS default handler (opener plugin in Tauri, window.open in browser). */
 export async function openExternal(url: string): Promise<void> {
   return (await backend()).openExternal(url);
+}
+
+/** App version (tauri.conf.json version in Tauri; \"dev\" in the browser mock). */
+export async function getAppVersion(): Promise<string> {
+  return (await backend()).getAppVersion();
 }

@@ -129,4 +129,5 @@ export const mockBackend: IpcBackend = {
     window.open(url, "_blank", "noopener,noreferrer");
     return Promise.resolve();
   },
+  getAppVersion: () => Promise.resolve("dev (browser mock)"),
 };

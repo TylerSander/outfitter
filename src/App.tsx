@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { installedCatalogApps, useStore } from "./store";
 import { OS_LABEL } from "./types";
 import Discover from "./components/Discover";
@@ -6,6 +6,7 @@ import AppGrid from "./components/AppGrid";
 import MyApps from "./components/MyApps";
 import AppDetail from "./components/AppDetail";
 import UpdateBanner from "./components/UpdateBanner";
+import FeedbackPanel from "./components/FeedbackPanel";
 
 export default function App() {
   const init = useStore((s) => s.init);
@@ -18,6 +19,7 @@ export default function App() {
   const setActiveView = useStore((s) => s.setActiveView);
   const searchQuery = useStore((s) => s.searchQuery);
   const setSearchQuery = useStore((s) => s.setSearchQuery);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   useEffect(() => {
     void init();
@@ -115,6 +117,11 @@ export default function App() {
             active={activeView === "my-apps"}
             onClick={() => setActiveView("my-apps")}
           />
+          <NavItem
+            label="Feedback"
+            active={false}
+            onClick={() => setFeedbackOpen(true)}
+          />
         </div>
       </aside>
 
@@ -184,6 +191,7 @@ export default function App() {
 
       <AppDetail />
       <UpdateBanner />
+      {feedbackOpen && <FeedbackPanel onClose={() => setFeedbackOpen(false)} />}
     </div>
   );
 }

@@ -1,0 +1,11 @@
+name: Question
+description: Ask anything about Outfitter
+title: "[question] "
+labels: [question]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true

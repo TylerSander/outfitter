@@ -1,0 +1,17 @@
+name: Feature request
+description: An idea that would make Outfitter better
+title: "[feature] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What should Outfitter do?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: What problem does this solve for you?

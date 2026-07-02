@@ -18,6 +18,9 @@ type Env = {
   DB: D1Database;
   WORKOS_CLIENT_ID: string;
   WORKOS_ISSUER: string;
+  /** Fine-grained GitHub token (issues:write on TylerSander/outfitter).
+   *  Optional: /feedback answers 501 until it is configured as a secret. */
+  GITHUB_FEEDBACK_TOKEN?: string;
 };
 
 type Vars = { sub: string };
@@ -42,6 +45,86 @@ const LIMITS = {
 };
 
 app.get("/healthz", (c) => c.json({ ok: true, service: "outfitter-api" }));
+
+// --- feedback -> GitHub issue (no sign-in required) ---
+// Deliberately OUTSIDE the /v1/* auth wall: desktop/web users without a
+// GitHub account (or an Outfitter account) can still report bugs. Spam
+// defenses: a honeypot field, size caps, and Cloudflare's edge on top.
+const FEEDBACK_LABEL: Record<string, string> = {
+  bug: "bug",
+  feature: "enhancement",
+  question: "question",
+};
+const FEEDBACK_REPO = "TylerSander/outfitter";
+
+app.post("/feedback", async (c) => {
+  if (!c.env.GITHUB_FEEDBACK_TOKEN) {
+    return c.json({ error: "feedback relay not configured" }, 501);
+  }
+  let body: {
+    type?: unknown;
+    title?: unknown;
+    body?: unknown;
+    meta?: unknown;
+    website?: unknown; // honeypot: real clients never fill this
+  };
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: "body must be JSON" }, 400);
+  }
+  if (typeof body.website === "string" && body.website !== "") {
+    return c.body(null, 204); // pretend success to bots
+  }
+  const type = typeof body.type === "string" && body.type in FEEDBACK_LABEL ? body.type : null;
+  const title = typeof body.title === "string" ? body.title.trim().slice(0, 120) : "";
+  const detail = typeof body.body === "string" ? body.body.trim().slice(0, 8000) : "";
+  if (type === null || title === "" || detail === "") {
+    return c.json({ error: "type (bug|feature|question), title, and body are required" }, 400);
+  }
+
+  // Optional attribution: if the caller sent an Outfitter session token and it
+  // verifies, note the user id. Invalid tokens don't block feedback.
+  let attribution = "_Submitted anonymously via the Outfitter feedback relay._";
+  const header = c.req.header("Authorization") ?? "";
+  if (header.startsWith("Bearer ")) {
+    try {
+      const { payload } = await jwtVerify(header.slice(7), getJwks(c.env.WORKOS_CLIENT_ID), {
+        issuer: c.env.WORKOS_ISSUER,
+        clockTolerance: 30,
+      });
+      if (typeof payload.sub === "string") {
+        attribution = `_Submitted via the Outfitter feedback relay by account \`${payload.sub}\`._`;
+      }
+    } catch {
+      // anonymous is fine
+    }
+  }
+
+  const meta =
+    typeof body.meta === "string" && body.meta.trim() !== ""
+      ? `\n\n### Diagnostics\n\`\`\`\n${body.meta.trim().slice(0, 2000)}\n\`\`\``
+      : "";
+  const res = await fetch(`https://api.github.com/repos/${FEEDBACK_REPO}/issues`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${c.env.GITHUB_FEEDBACK_TOKEN}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "User-Agent": "outfitter-feedback-relay",
+    },
+    body: JSON.stringify({
+      title: `[${type}] ${title}`,
+      body: `${detail}${meta}\n\n${attribution}`,
+      labels: [FEEDBACK_LABEL[type]],
+    }),
+  });
+  if (!res.ok) {
+    return c.json({ error: `GitHub rejected the issue (HTTP ${res.status})` }, 502);
+  }
+  const issue = (await res.json()) as { html_url?: string };
+  return c.json({ url: issue.html_url ?? null }, 201);
+});
 
 // --- auth middleware ---
 app.use("/v1/*", async (c, next) => {
