@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Outfitter</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="site.css">
+<meta name="description" content="How Outfitter works: a curated catalog over winget, Homebrew, and Flatpak. Every install comes from the official source — Outfitter never hosts installers.">
+</head>
+<body>
+<div class="vignette"></div><div class="grain"></div>
+<div class="wrap">
+  <header>
+    <a class="wordmark" href="index.html">Outfitter <em>fits out your machine</em></a>
+    <nav class="top">
+      <a class="navlink" href="index.html">Home</a>
+      <a class="navlink on" href="about.html">About</a>
+      <a class="navlink" href="downloads.html">Downloads</a>
+      <a class="navlink" href="account.html">Account<span class="dot" id="nav-dot"></span></a>
+    </nav>
+  </header>
+  <div class="divider"></div>
+
+  <section class="page-hero">
+    <h1>About</h1>
+    <p class="tag">Setting up a computer shouldn't mean twenty tabs, twenty installers, and a
+    prayer that none of them were fakes. Outfitter is one shelf of good software,
+    installed the way your <span class="amp">operating system already trusts</span>.</p>
+  </section>
+
+  <h2 class="index-label">What it does</h2>
+  <div class="about">
+    <div><h3>Curated, not crowded</h3><p>A hand-picked shelf of the apps people actually want — browsers, chat, games, dev tools, AI tools — with real descriptions and real logos. No ads, no bundleware, no ★★★★★ lookalikes.</p></div>
+    <div><h3>Provenance on every tile</h3><p>Every app shows exactly where it comes from — "via winget · VideoLAN.VLC" — and community-maintained packages are labeled as such. You always know what you're installing.</p></div>
+    <div><h3>Updates itself</h3><p>Outfitter checks its own releases and updates in place with one click, verified with cryptographic signatures before anything runs.</p></div>
+    <div><h3>Your list, everywhere</h3><p>Sign in to save links and apps you want on your next machine. Set up a new computer by opening Outfitter and pressing install.</p></div>
+  </div>
+
+  <h2 class="index-label">How it works</h2>
+  <div class="steps">
+    <div><h3>Browse the shelf</h3><p>Pick from a categorized catalog of real apps with honest descriptions — or search for the one you came for.</p></div>
+    <div><h3>Outfitter asks your OS</h3><p>Behind the scenes it hands the job to your platform's own package manager: winget on Windows, Homebrew on macOS, Flatpak on Linux.</p></div>
+    <div><h3>Installed from the source</h3><p>The package manager downloads the publisher's official release and installs it — the same as if you'd typed the command yourself.</p></div>
+  </div>
+
+  <h2 class="index-label">What we don't do</h2>
+  <p class="prose">Outfitter <span class="amp">never hosts installers</span> and never re-wraps
+  anyone's software. There is no telemetry, no sponsored placement, and nothing to upsell.
+  The whole thing is open source, and the app's own updates are cryptographically signed
+  and verified before a single byte runs. Where a listing is maintained by the community
+  rather than the publisher, the tile says so — provenance first, always.</p>
+
+  <p class="prose" style="margin-top:18px">Found something broken, or missing an app you
+  love? Use the links in the footer below — or send feedback straight from the app
+  (sidebar → Feedback), which attaches diagnostics automatically.</p>
+
+  <footer>
+    <div class="foot-links">
+      <a href="https://github.com/TylerSander/outfitter/issues/new?template=bug_report.yml">Report a bug</a>
+      <a href="https://github.com/TylerSander/outfitter/issues/new?template=feature_request.yml">Request a feature</a>
+      <a href="https://github.com/TylerSander/outfitter/issues/new?template=question.yml">Ask a question</a>
+      <a href="https://github.com/TylerSander/outfitter">GitHub</a>
+      <a id="discord-link" href="#">Discord</a>
+    </div>
+    <span class="pulse"></span>Open source · free forever · no installers hosted here<br>
+    App logos are the trademarks of their respective owners, shown to identify the software they belong to.
+  </footer>
+</div>
+<script src="site.js"></script>
+</body>
+</html>
