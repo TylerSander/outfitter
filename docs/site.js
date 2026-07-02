@@ -43,6 +43,11 @@ async function initAuth(hadCode) {
   try {
     authkit = await createClient(WORKOS_CLIENT_ID, {
       redirectUri: REDIRECT_URI,
+      // Keeps the refresh token in localStorage so the login survives page
+      // navigation. Without this the SDK holds sessions in memory only and
+      // expects a custom auth domain (auth.devoutfitter.com) to restore them —
+      // once that domain exists, switch to `apiHostname` and drop this flag.
+      devMode: true,
       // Runs after the SDK finishes the code exchange on the callback page.
       onRedirectCallback: () => {
         if (!/account\.html$/.test(location.pathname)) location.replace("account.html");
