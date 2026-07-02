@@ -1,1044 +1,1697 @@
 {
-  "schemaVersion": 1,
-  "catalogVersion": "2026.07.01-1",
-  "updatedAt": "2026-07-01T21:47:50Z",
-  "categories": [
-    {
-      "id": "browsers",
-      "name": "Browsers",
-      "icon": "globe",
-      "order": 1
-    },
-    {
-      "id": "communication",
-      "name": "Communication",
-      "icon": "message-circle",
-      "order": 2
-    },
-    {
-      "id": "games-launchers",
-      "name": "Games & Launchers",
-      "icon": "gamepad-2",
-      "order": 3
-    },
-    {
-      "id": "video-recording",
-      "name": "Video & Audio",
-      "icon": "clapperboard",
-      "order": 4
-    },
-    {
-      "id": "productivity",
-      "name": "Productivity",
-      "icon": "notebook-pen",
-      "order": 5
-    },
-    {
-      "id": "developer-tools",
-      "name": "Developer Tools",
-      "icon": "terminal",
-      "order": 6
-    }
-  ],
-  "apps": [
-    {
-      "id": "google-chrome",
-      "name": "Google Chrome",
-      "shortDescription": "Google's fast, widely used web browser",
-      "description": "The world's most widely used web browser. Syncs bookmarks, passwords, and tabs across devices with a Google account, and supports a large extension ecosystem.",
-      "category": "browsers",
-      "homepage": "https://www.google.com/chrome/",
-      "license": "Proprietary",
-      "icon": "icons/google-chrome.png",
-      "tags": [
-        "browser",
-        "web",
-        "google",
-        "sync"
-      ],
-      "featured": true,
-      "popularity": 100,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Google.Chrome",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "google-chrome",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.google.Chrome",
-            "official": false,
-            "note": "Flathub listing exists but is a community-maintained wrapper, not verified by or affiliated with Google."
-          }
-        ]
-      }
-    },
-    {
-      "id": "firefox",
-      "name": "Firefox",
-      "shortDescription": "Open-source browser from Mozilla",
-      "description": "Mozilla's free and open-source web browser, focused on privacy and standards compliance. The main independent alternative to Chromium-based browsers.",
-      "category": "browsers",
-      "homepage": "https://www.mozilla.org/firefox/",
-      "license": "MPL-2.0",
-      "icon": "icons/firefox.png",
-      "tags": [
-        "browser",
-        "web",
-        "open-source",
-        "privacy"
-      ],
-      "featured": true,
-      "popularity": 88,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Mozilla.Firefox",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "firefox",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "org.mozilla.firefox",
-            "official": true,
-            "note": "Official Mozilla-verified Flathub listing."
-          }
-        ]
-      }
-    },
-    {
-      "id": "brave",
-      "name": "Brave",
-      "shortDescription": "Privacy-focused browser with built-in ad blocking",
-      "description": "A Chromium-based browser that blocks ads and trackers by default. Includes optional crypto wallet and rewards features, with Chrome extension compatibility.",
-      "category": "browsers",
-      "homepage": "https://brave.com/",
-      "license": "MPL-2.0",
-      "icon": "icons/brave.png",
-      "tags": [
-        "browser",
-        "web",
-        "privacy",
-        "ad-blocking",
-        "chromium"
-      ],
-      "featured": false,
-      "popularity": 70,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Brave.Brave",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "brave-browser",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.brave.Browser",
-            "official": true,
-            "note": "Verified publisher (Brave Software) on Flathub."
-          }
-        ]
-      }
-    },
-    {
-      "id": "vivaldi",
-      "name": "Vivaldi",
-      "shortDescription": "Highly customizable browser with built-in tools",
-      "description": "A Chromium-based browser for power users, with deep UI customization, tab stacking, and built-in email client, notes, and ad blocker.",
-      "category": "browsers",
-      "homepage": "https://vivaldi.com/",
-      "license": "Proprietary",
-      "icon": "icons/vivaldi.png",
-      "tags": [
-        "browser",
-        "web",
-        "customization",
-        "power-user",
-        "chromium"
-      ],
-      "featured": false,
-      "popularity": 45,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Vivaldi.Vivaldi",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "vivaldi",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.vivaldi.Vivaldi",
-            "official": false,
-            "note": "Flathub listing exists but is community-maintained and not yet officially endorsed or supported by Vivaldi Technologies."
-          }
-        ]
-      }
-    },
-    {
-      "id": "discord",
-      "name": "Discord",
-      "shortDescription": "Voice, video, and text chat for communities",
-      "description": "Chat app built around servers and channels, with voice rooms, video calls, and screen sharing. Widely used by gaming groups, open-source projects, and online communities.",
-      "category": "communication",
-      "homepage": "https://discord.com/",
-      "license": "Proprietary",
-      "icon": "icons/discord.png",
-      "tags": [
-        "chat",
-        "voice",
-        "video",
-        "communities",
-        "gaming"
-      ],
-      "featured": true,
-      "popularity": 92,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Discord.Discord",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "discord",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.discordapp.Discord",
-            "official": true,
-            "note": "Publisher-verified on Flathub (website verification via discordapp.com)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "zoom",
-      "name": "Zoom",
-      "shortDescription": "Video meetings, webinars, and screen sharing",
-      "description": "Video conferencing app for meetings, webinars, and screen sharing. Common default for work calls, remote classes, and large online events.",
-      "category": "communication",
-      "homepage": "https://zoom.us/",
-      "license": "Proprietary",
-      "icon": "icons/zoom.png",
-      "tags": [
-        "video-calls",
-        "meetings",
-        "webinars",
-        "screen-sharing"
-      ],
-      "featured": true,
-      "popularity": 90,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Zoom.Zoom",
-            "official": true,
-            "note": "Still published as Zoom.Zoom despite the Zoom Workplace rebrand; no separate ZoomWorkplace package exists under the Zoom publisher."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "zoom",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "us.zoom.Zoom",
-            "official": false,
-            "note": "Community-maintained wrapper; Flathub listing states it is not verified by or affiliated with zoom.us."
-          }
-        ]
-      }
-    },
-    {
-      "id": "slack",
-      "name": "Slack",
-      "shortDescription": "Team messaging organized into channels",
-      "description": "Workplace messaging app with channels, threads, huddles, and file sharing. The standard team chat tool at many companies, with a large ecosystem of integrations.",
-      "category": "communication",
-      "homepage": "https://slack.com/",
-      "license": "Proprietary",
-      "icon": "icons/slack.png",
-      "tags": [
-        "chat",
-        "teams",
-        "work",
-        "collaboration"
-      ],
-      "featured": false,
-      "popularity": 88,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "SlackTechnologies.Slack",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "slack",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.slack.Slack",
-            "official": false,
-            "note": "Community-maintained wrapper; Flathub listing states it is not verified by or affiliated with Slack Technologies. Slack for Linux is beta."
-          }
-        ]
-      }
-    },
-    {
-      "id": "signal",
-      "name": "Signal",
-      "shortDescription": "Private, end-to-end encrypted messaging",
-      "description": "Messaging app with end-to-end encryption on by default for texts, calls, and file sharing. Run by a nonprofit; the desktop app links to Signal on your phone.",
-      "category": "communication",
-      "homepage": "https://signal.org/",
-      "license": "AGPL-3.0-only",
-      "icon": "icons/signal.png",
-      "tags": [
-        "chat",
-        "privacy",
-        "encryption",
-        "messaging"
-      ],
-      "featured": false,
-      "popularity": 72,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "OpenWhisperSystems.Signal",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "signal",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "org.signal.Signal",
-            "official": false,
-            "note": "Community-maintained Flatpak; not officially endorsed or maintained by Signal Foundation. Signal officially distributes a Debian apt repo instead."
-          }
-        ]
-      }
-    },
-    {
-      "id": "steam",
-      "name": "Steam",
-      "shortDescription": "The biggest PC game store and library",
-      "description": "Valve's game store and launcher. Buy, download, and play PC games, keep them updated automatically, and sync saves and friends lists across machines.",
-      "category": "games-launchers",
-      "homepage": "https://store.steampowered.com",
-      "license": "Proprietary",
-      "icon": "icons/steam.png",
-      "tags": [
-        "games",
-        "launcher",
-        "store",
-        "library"
-      ],
-      "featured": true,
-      "popularity": 98,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Valve.Steam",
-            "official": true,
-            "note": "Confirmed at manifests/v/Valve/Steam in microsoft/winget-pkgs. Single version folder because Steam self-updates after install."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "steam",
-            "official": true,
-            "note": "Cask; verified via formulae.brew.sh API."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.valvesoftware.Steam",
-            "official": false,
-            "note": "ID confirmed to exist on Flathub, but the listing is community-maintained and not verified by Valve (verification field is null)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "epic-games-launcher",
-      "name": "Epic Games Launcher",
-      "shortDescription": "Epic Games Store client and game launcher",
-      "description": "Official client for the Epic Games Store. Claim the weekly free games, install and update your library, and launch titles like Fortnite and Unreal Engine tools.",
-      "category": "games-launchers",
-      "homepage": "https://store.epicgames.com",
-      "license": "Proprietary",
-      "icon": "icons/epic-games-launcher.png",
-      "tags": [
-        "games",
-        "launcher",
-        "store"
-      ],
-      "featured": true,
-      "popularity": 85,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "EpicGames.EpicGamesLauncher",
-            "official": true,
-            "note": "Confirmed at manifests/e/EpicGames/EpicGamesLauncher in microsoft/winget-pkgs."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "epic-games",
-            "official": true,
-            "note": "Cask; verified via formulae.brew.sh API."
-          }
-        ],
-        "linux": []
-      }
-    },
-    {
-      "id": "gog-galaxy",
-      "name": "GOG Galaxy",
-      "shortDescription": "GOG's DRM-free game client and library hub",
-      "description": "Client for GOG.com's DRM-free game store. Installs and updates your GOG library and can aggregate games from other launchers into one library view.",
-      "category": "games-launchers",
-      "homepage": "https://www.gog.com/galaxy",
-      "license": "Proprietary",
-      "icon": "icons/gog-galaxy.png",
-      "tags": [
-        "games",
-        "launcher",
-        "store",
-        "drm-free"
-      ],
-      "featured": false,
-      "popularity": 65,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "GOG.Galaxy",
-            "official": true,
-            "note": "Confirmed at manifests/g/GOG/Galaxy in microsoft/winget-pkgs."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "gog-galaxy",
-            "official": true,
-            "note": "Cask; verified via formulae.brew.sh API."
-          }
-        ],
-        "linux": []
-      }
-    },
-    {
-      "id": "prism-launcher",
-      "name": "Prism Launcher",
-      "shortDescription": "Open-source Minecraft launcher with instances",
-      "description": "A free, open-source Minecraft launcher that manages multiple isolated game instances, mod loaders, and modpacks side by side. Community fork of MultiMC.",
-      "category": "games-launchers",
-      "homepage": "https://prismlauncher.org",
-      "license": "GPL-3.0-only",
-      "icon": "icons/prism-launcher.png",
-      "tags": [
-        "games",
-        "minecraft",
-        "launcher",
-        "open-source",
-        "mods"
-      ],
-      "featured": false,
-      "popularity": 55,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "PrismLauncher.PrismLauncher",
-            "official": true,
-            "note": "Confirmed at manifests/p/PrismLauncher/PrismLauncher in microsoft/winget-pkgs."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "prismlauncher",
-            "official": true,
-            "note": "Cask; verified via formulae.brew.sh API."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "org.prismlauncher.PrismLauncher",
-            "official": true,
-            "note": "Verified-publisher listing on Flathub (verification_verified: true)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "vlc",
-      "name": "VLC",
-      "shortDescription": "Plays almost any video or audio file",
-      "description": "A media player that handles nearly every video and audio format without extra codecs, plus DVDs, audio CDs, and network streams. It can also convert files and record your desktop or streams.",
-      "category": "video-recording",
-      "homepage": "https://www.videolan.org/vlc/",
-      "license": "GPL-2.0-or-later",
-      "icon": "icons/vlc.png",
-      "tags": [
-        "media-player",
-        "video",
-        "audio",
-        "open-source"
-      ],
-      "featured": true,
-      "popularity": 95,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "VideoLAN.VLC",
-            "official": true,
-            "note": "Confirmed in winget-pkgs at manifests/v/VideoLAN/VLC."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "vlc",
-            "official": true,
-            "note": "Cask token 'vlc', HTTP 200 on formulae.brew.sh."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "org.videolan.VLC",
-            "official": false,
-            "note": "ID exists on Flathub but the listing is not publisher-verified (community-maintained)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "obs-studio",
-      "name": "OBS Studio",
-      "shortDescription": "Free screen recording and live streaming",
-      "description": "Records your screen, webcam, and audio, and streams live to platforms like Twitch and YouTube. The standard tool for screen capture and streaming, with scenes, sources, and audio mixing built in.",
-      "category": "video-recording",
-      "homepage": "https://obsproject.com/",
-      "license": "GPL-2.0-or-later",
-      "icon": "icons/obs-studio.png",
-      "tags": [
-        "screen-recording",
-        "live-streaming",
-        "video",
-        "open-source"
-      ],
-      "featured": true,
-      "popularity": 90,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "OBSProject.OBSStudio",
-            "official": true,
-            "note": "Confirmed in winget-pkgs at manifests/o/OBSProject/OBSStudio (latest 32.1.2)."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "obs",
-            "official": true,
-            "note": "Cask token 'obs', HTTP 200 on formulae.brew.sh."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.obsproject.Studio",
-            "official": true,
-            "note": "Flathub listing verified by publisher (website obsproject.com)."
-          }
-        ]
-      }
-    },
-    {
+ "schemaVersion": 1,
+ "catalogVersion": "2026.07.01-2",
+ "updatedAt": "2026-07-01T23:30:00Z",
+ "categories": [
+  {
+   "id": "browsers",
+   "name": "Browsers",
+   "icon": "globe",
+   "order": 1
+  },
+  {
+   "id": "communication",
+   "name": "Communication",
+   "icon": "message-circle",
+   "order": 2
+  },
+  {
+   "id": "ai-tools",
+   "name": "AI Tools",
+   "icon": "sparkles",
+   "order": 3
+  },
+  {
+   "id": "games-launchers",
+   "name": "Games & Launchers",
+   "icon": "gamepad-2",
+   "order": 4
+  },
+  {
+   "id": "media-creative",
+   "name": "Media & Creative",
+   "icon": "clapperboard",
+   "order": 5
+  },
+  {
+   "id": "productivity",
+   "name": "Productivity",
+   "icon": "layout-list",
+   "order": 6
+  },
+  {
+   "id": "developer-tools",
+   "name": "Developer Tools",
+   "icon": "code-2",
+   "order": 7
+  },
+  {
+   "id": "system-utilities",
+   "name": "System & Utilities",
+   "icon": "wrench",
+   "order": 8
+  }
+ ],
+ "apps": [
+  {
+   "id": "adobe-creative-cloud",
+   "name": "Adobe Creative Cloud",
+   "shortDescription": "Adobe's desktop manager for installing Creative Cloud apps like Photoshop",
+   "description": "The Adobe Creative Cloud desktop app is Adobe's installer and license manager for its creative suite, used to install and update Photoshop, Illustrator, Premiere Pro, and 20+ other apps. Individual apps require a paid Creative Cloud subscription.",
+   "category": "media-creative",
+   "homepage": "https://creativecloud.adobe.com/",
+   "license": "Proprietary",
+   "icon": "icons/adobe-creative-cloud.png",
+   "tags": [
+    "photoshop",
+    "design",
+    "creative",
+    "adobe",
+    "subscription"
+   ],
+   "featured": false,
+   "popularity": 74,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Adobe.CreativeCloud",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "adobe-creative-cloud",
+      "official": true,
+      "note": "Installer script requires admin privileges."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "audacity",
+   "name": "Audacity",
+   "shortDescription": "Multi-track audio recording and editing",
+   "description": "Records and edits audio across multiple tracks, with effects, noise reduction, and export to common formats. Widely used for podcast recording, voiceovers, and cleaning up audio for video projects.",
+   "category": "media-creative",
+   "homepage": "https://www.audacityteam.org/",
+   "license": "GPL-3.0-only",
+   "icon": "icons/audacity.png",
+   "tags": [
+    "audio-editing",
+    "recording",
+    "audio",
+    "open-source"
+   ],
+   "featured": false,
+   "popularity": 75,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Audacity.Audacity",
+      "official": true,
+      "note": "Confirmed in winget-pkgs at manifests/a/Audacity/Audacity (latest 3.7.8)."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
       "id": "audacity",
-      "name": "Audacity",
-      "shortDescription": "Multi-track audio recording and editing",
-      "description": "Records and edits audio across multiple tracks, with effects, noise reduction, and export to common formats. Widely used for podcast recording, voiceovers, and cleaning up audio for video projects.",
-      "category": "video-recording",
-      "homepage": "https://www.audacityteam.org/",
-      "license": "GPL-3.0-only",
-      "icon": "icons/audacity.png",
-      "tags": [
-        "audio-editing",
-        "recording",
-        "audio",
-        "open-source"
-      ],
-      "featured": false,
-      "popularity": 75,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Audacity.Audacity",
-            "official": true,
-            "note": "Confirmed in winget-pkgs at manifests/a/Audacity/Audacity (latest 3.7.8)."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "audacity",
-            "official": true,
-            "note": "Cask token 'audacity', HTTP 200 on formulae.brew.sh."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "org.audacityteam.Audacity",
-            "official": false,
-            "note": "ID exists on Flathub but the listing is not publisher-verified (community-maintained)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "handbrake",
-      "name": "HandBrake",
-      "shortDescription": "Converts video files to modern formats",
-      "description": "Converts video from nearly any format into widely supported codecs like H.264, H.265, and AV1. Includes device presets, batch queueing, subtitle handling, and DVD/Blu-ray ripping from unencrypted sources.",
-      "category": "video-recording",
-      "homepage": "https://handbrake.fr/",
-      "license": "GPL-2.0-only",
-      "icon": "icons/handbrake.png",
-      "tags": [
-        "video-conversion",
-        "transcoding",
-        "video",
-        "open-source"
-      ],
-      "featured": false,
-      "popularity": 72,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "HandBrake.HandBrake",
-            "official": true,
-            "note": "Confirmed in winget-pkgs at manifests/h/HandBrake/HandBrake."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "handbrake-app",
-            "official": true,
-            "note": "Corrected: cask was renamed from 'handbrake' to 'handbrake-app' (old token aliased). A separate 'handbrake' formula provides only HandBrakeCLI."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "fr.handbrake.ghb",
-            "official": true,
-            "note": "Flathub listing verified by publisher (website handbrake.fr)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "notion",
-      "name": "Notion",
-      "shortDescription": "All-in-one workspace for notes, docs, and tasks",
-      "description": "A connected workspace for notes, documents, wikis, project tracking, and databases. The desktop app syncs with Notion's cloud service and supports team collaboration.",
-      "category": "productivity",
-      "homepage": "https://www.notion.com",
-      "license": "Proprietary",
-      "icon": "icons/notion.png",
-      "tags": [
-        "notes",
-        "wiki",
-        "project-management",
-        "collaboration",
-        "databases"
-      ],
-      "featured": true,
-      "popularity": 90,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Notion.Notion",
-            "official": true,
-            "note": "Confirmed at manifests/n/Notion/Notion; latest manifest 7.0.0."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "notion",
-            "official": true,
-            "note": "Cask, version 7.24.0."
-          }
-        ],
-        "linux": []
-      }
-    },
-    {
-      "id": "obsidian",
-      "name": "Obsidian",
-      "shortDescription": "Note-taking app built on local Markdown files",
-      "description": "A knowledge base and note-taking app that works on top of a local folder of plain-text Markdown files. Supports linking notes together, a graph view, and a large plugin ecosystem, with your data staying on your own machine.",
-      "category": "productivity",
-      "homepage": "https://obsidian.md",
-      "license": "Proprietary",
-      "icon": "icons/obsidian.png",
-      "tags": [
-        "notes",
-        "markdown",
-        "knowledge-base",
-        "pkm",
-        "writing"
-      ],
-      "featured": true,
-      "popularity": 88,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Obsidian.Obsidian",
-            "official": true,
-            "note": "Confirmed at manifests/o/Obsidian/Obsidian; latest manifest 1.12.7."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "obsidian",
-            "official": true,
-            "note": "Cask, version 1.12.7."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "md.obsidian.Obsidian",
-            "official": true,
-            "note": "Verified-publisher listing (verified via obsidian.md), though Obsidian marks the Flatpak distribution as unsupported."
-          }
-        ]
-      }
-    },
-    {
+      "official": true,
+      "note": "Cask token 'audacity', HTTP 200 on formulae.brew.sh."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "org.audacityteam.Audacity",
+      "official": false,
+      "note": "ID exists on Flathub but the listing is not publisher-verified (community-maintained)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "balena-etcher",
+   "name": "balenaEtcher",
+   "shortDescription": "Flash OS images to USB drives and SD cards safely",
+   "description": "balenaEtcher is a cross-platform image flasher for writing OS images to USB drives and SD cards. It validates every byte written and protects against accidentally overwriting system hard drives.",
+   "category": "system-utilities",
+   "homepage": "https://etcher.balena.io/",
+   "license": "Apache-2.0",
+   "icon": "icons/balena-etcher.png",
+   "tags": [
+    "usb",
+    "flashing",
+    "imaging",
+    "sd-card",
+    "utilities"
+   ],
+   "featured": false,
+   "popularity": 75,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Balena.Etcher",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "balenaetcher",
+      "official": true,
+      "note": "Cask version 2.1.6; installs balenaEtcher.app to /Applications, no sudo/pkg required."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "bitwarden",
+   "name": "Bitwarden",
+   "shortDescription": "Open-source password manager and vault",
+   "description": "A password manager that stores logins, cards, and secure notes in an encrypted vault synced across devices. Open source, with free personal use and optional paid plans.",
+   "category": "productivity",
+   "homepage": "https://bitwarden.com",
+   "license": "GPL-3.0-only",
+   "icon": "icons/bitwarden.png",
+   "tags": [
+    "passwords",
+    "security",
+    "encryption",
+    "open-source"
+   ],
+   "featured": false,
+   "popularity": 85,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Bitwarden.Bitwarden",
+      "official": true,
+      "note": "Confirmed at manifests/b/Bitwarden/Bitwarden; latest manifest 2026.6.1."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
       "id": "bitwarden",
-      "name": "Bitwarden",
-      "shortDescription": "Open-source password manager and vault",
-      "description": "A password manager that stores logins, cards, and secure notes in an encrypted vault synced across devices. Open source, with free personal use and optional paid plans.",
-      "category": "productivity",
-      "homepage": "https://bitwarden.com",
-      "license": "GPL-3.0-only",
-      "icon": "icons/bitwarden.png",
-      "tags": [
-        "passwords",
-        "security",
-        "encryption",
-        "open-source"
-      ],
-      "featured": false,
-      "popularity": 85,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Bitwarden.Bitwarden",
-            "official": true,
-            "note": "Confirmed at manifests/b/Bitwarden/Bitwarden; latest manifest 2026.6.1."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "bitwarden",
-            "official": true,
-            "note": "Cask, version 2026.6.1. Note: the cask build lacks some features of the Mac App Store build (e.g. Safari extension integration)."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.bitwarden.desktop",
-            "official": true,
-            "note": "Verified-publisher listing by Bitwarden Inc. (verified via bitwarden.com)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "libreoffice",
-      "name": "LibreOffice",
-      "shortDescription": "Free, open-source office suite",
-      "description": "A full office suite with word processor, spreadsheet, presentation, drawing, and database applications. Free and open source, with good compatibility with Microsoft Office file formats.",
-      "category": "productivity",
-      "homepage": "https://www.libreoffice.org",
-      "license": "MPL-2.0",
-      "icon": "icons/libreoffice.png",
-      "tags": [
-        "office",
-        "documents",
-        "spreadsheets",
-        "presentations",
-        "open-source"
-      ],
-      "featured": false,
-      "popularity": 82,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "TheDocumentFoundation.LibreOffice",
-            "official": true,
-            "note": "Confirmed at manifests/t/TheDocumentFoundation/LibreOffice; latest manifest 26.2.4.2."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "libreoffice",
-            "official": true,
-            "note": "Cask, version 26.2.4 (fresh branch)."
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "org.libreoffice.LibreOffice",
-            "official": true,
-            "note": "Verified-publisher listing by The Document Foundation (verified via libreoffice.org)."
-          }
-        ]
-      }
-    },
-    {
-      "id": "visual-studio-code",
-      "name": "Visual Studio Code",
-      "shortDescription": "Microsoft's free code editor with extensions",
-      "description": "A free code editor from Microsoft with built-in Git support, debugging, and a large extension marketplace. The most widely used editor for general-purpose programming and web development.",
-      "category": "developer-tools",
-      "homepage": "https://code.visualstudio.com",
-      "license": "Proprietary",
-      "icon": "icons/visual-studio-code.png",
-      "tags": [
-        "editor",
-        "ide",
-        "programming",
-        "microsoft"
-      ],
-      "featured": true,
-      "popularity": 96,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Microsoft.VisualStudioCode",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "visual-studio-code",
-            "official": true
-          }
-        ],
-        "linux": [
-          {
-            "manager": "flatpak",
-            "id": "com.visualstudio.code",
-            "official": false,
-            "note": "Exists on Flathub but is a community-maintained repackaging of Microsoft's proprietary build, explicitly not supported by Microsoft; Flathub verification field is null."
-          }
-        ]
-      }
-    },
-    {
-      "id": "git",
-      "name": "Git",
-      "shortDescription": "Version control system for tracking code changes",
-      "description": "The standard distributed version control system. Tracks changes to files, lets multiple people work on the same codebase, and powers services like GitHub and GitLab.",
-      "category": "developer-tools",
-      "homepage": "https://git-scm.com",
-      "license": "GPL-2.0-only",
-      "icon": "icons/git.png",
-      "tags": [
-        "version-control",
-        "cli",
-        "programming"
-      ],
-      "featured": true,
-      "popularity": 92,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Git.Git",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew",
-            "id": "git",
-            "official": true,
-            "note": "Homebrew formula (CLI tool), not a cask."
-          }
-        ],
-        "linux": []
-      }
-    },
-    {
-      "id": "python-3",
-      "name": "Python 3",
-      "shortDescription": "Popular programming language and interpreter",
-      "description": "The Python programming language interpreter and standard library. Widely used for scripting, automation, data science, and web development. Installs the current stable 3.14 series.",
-      "category": "developer-tools",
-      "homepage": "https://www.python.org",
-      "license": "Python-2.0",
-      "icon": "icons/python-3.png",
-      "tags": [
-        "programming",
-        "language",
-        "runtime",
-        "cli"
-      ],
-      "featured": false,
-      "popularity": 90,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Python.Python.3.14",
-            "official": true,
-            "note": "Correction from candidate Python.Python.3.13: winget minor-version folders under Python.Python.3 go up to 14, matching current stable 3.14."
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew",
-            "id": "python@3.14",
-            "official": true,
-            "note": "Homebrew formula, not a cask. The bare 'python' name is only an alias (API endpoint for it 404s); 'python' and 'python3' both resolve to python@3.14 (3.14.6)."
-          }
-        ],
-        "linux": []
-      }
-    },
-    {
+      "official": true,
+      "note": "Cask, version 2026.6.1. Note: the cask build lacks some features of the Mac App Store build (e.g. Safari extension integration)."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.bitwarden.desktop",
+      "official": true,
+      "note": "Verified-publisher listing by Bitwarden Inc. (verified via bitwarden.com)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "brave",
+   "name": "Brave",
+   "shortDescription": "Privacy-focused browser with built-in ad blocking",
+   "description": "A Chromium-based browser that blocks ads and trackers by default. Includes optional crypto wallet and rewards features, with Chrome extension compatibility.",
+   "category": "browsers",
+   "homepage": "https://brave.com/",
+   "license": "MPL-2.0",
+   "icon": "icons/brave.png",
+   "tags": [
+    "browser",
+    "web",
+    "privacy",
+    "ad-blocking",
+    "chromium"
+   ],
+   "featured": false,
+   "popularity": 70,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Brave.Brave",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "brave-browser",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.brave.Browser",
+      "official": true,
+      "note": "Verified publisher (Brave Software) on Flathub."
+     }
+    ]
+   }
+  },
+  {
+   "id": "claude-code-cli",
+   "name": "Claude Code CLI",
+   "shortDescription": "Anthropic's agentic coding assistant that lives in your terminal",
+   "description": "Claude Code is Anthropic's terminal-based coding agent: it reads your codebase, edits files, runs commands, and creates commits from natural-language prompts. Composable and scriptable in the Unix tradition, with MCP support for external tools.",
+   "category": "ai-tools",
+   "homepage": "https://claude.com/product/claude-code",
+   "license": "Proprietary",
+   "icon": "icons/claude-code-cli.png",
+   "tags": [
+    "ai",
+    "cli",
+    "coding",
+    "agent",
+    "anthropic"
+   ],
+   "featured": false,
+   "popularity": 86,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Anthropic.ClaudeCode",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "claude-code",
+      "official": true
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "claude-code-desktop",
+   "name": "Claude Desktop",
+   "shortDescription": "Anthropic's desktop app whose Code tab is the Claude Code agentic coding...",
+   "description": "Anthropic ships a single Claude desktop app with three tabs — Chat, Cowork, and Code — where the Code tab is the full Claude Code experience: parallel sessions, integrated terminal/editor, diff review, live preview, and scheduled tasks. There is no separate 'Claude Code Desktop' binary; installing the Claude app gets you Claude Code on desktop (paid plan required for the Code tab).",
+   "category": "ai-tools",
+   "homepage": "https://claude.com/product/claude-code",
+   "license": "Proprietary",
+   "icon": "icons/claude-code-desktop.png",
+   "tags": [
+    "ai",
+    "coding",
+    "agent",
+    "developer-tools",
+    "anthropic"
+   ],
+   "featured": true,
+   "popularity": 90,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Anthropic.Claude",
+      "official": true,
+      "note": "Claude Code is the Code tab of the Claude desktop app (subscription required)."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "claude",
+      "official": true,
+      "note": "Claude Code is the Code tab of the Claude desktop app (subscription required)."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "codex-cli",
+   "name": "Codex CLI",
+   "shortDescription": "OpenAI's open-source coding agent that runs in your terminal",
+   "description": "Codex CLI is OpenAI's open-source (Apache-2.0, Rust) local coding agent that lets you write, edit, and understand code from the command line. It works with ChatGPT plans or an OpenAI API key.",
+   "category": "ai-tools",
+   "homepage": "https://github.com/openai/codex",
+   "license": "Apache-2.0",
+   "icon": "icons/codex-cli.png",
+   "tags": [
+    "ai",
+    "cli",
+    "coding",
+    "agent",
+    "open-source"
+   ],
+   "featured": false,
+   "popularity": 78,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "OpenAI.Codex",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "codex",
+      "official": true
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "codex-desktop",
+   "name": "Codex Desktop",
+   "shortDescription": "OpenAI's Codex desktop app — a command center for running coding agents in...",
+   "description": "OpenAI's official Codex desktop app (macOS and Windows) is a command center for agentic software development: run multiple coding agents in parallel with built-in worktrees, cloud environments, diff review, skills, and scheduled automations. It picks up configuration from the Codex CLI and IDE extension.",
+   "category": "ai-tools",
+   "homepage": "https://openai.com/codex/",
+   "license": "Proprietary",
+   "icon": "icons/codex-desktop.png",
+   "tags": [
+    "ai",
+    "coding",
+    "agent",
+    "developer-tools",
+    "openai"
+   ],
+   "featured": false,
+   "popularity": 80,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "9PLM9XGG6VKS",
+      "official": true,
+      "note": "Microsoft Store listing; winget resolves it through its msstore source."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "codex-app",
+      "official": true,
+      "note": "v26.623.81905 (calendar-version scheme), installs Codex.app to /Applications without sudo, requires macOS 12+; ARM64 and x64 builds."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "cursor",
+   "name": "Cursor",
+   "shortDescription": "AI-powered code editor built on VS Code",
+   "description": "Cursor is Anysphere's AI-native IDE built on the VS Code codebase, with integrated AI agents, chat, and predictive editing. It is proprietary software with free and paid subscription tiers.",
+   "category": "developer-tools",
+   "homepage": "https://www.cursor.com/",
+   "license": "Proprietary",
+   "icon": "icons/cursor.png",
+   "tags": [
+    "ai",
+    "editor",
+    "ide",
+    "development",
+    "coding"
+   ],
+   "featured": true,
+   "popularity": 85,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Anysphere.Cursor",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "cursor",
+      "official": true,
+      "note": "HTTP 200 on formulae.brew.sh; version 3.9.16, installs Cursor.app to /Applications without sudo and adds a 'cursor' CLI shim."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "discord",
+   "name": "Discord",
+   "shortDescription": "Voice, video, and text chat for communities",
+   "description": "Chat app built around servers and channels, with voice rooms, video calls, and screen sharing. Widely used by gaming groups, open-source projects, and online communities.",
+   "category": "communication",
+   "homepage": "https://discord.com/",
+   "license": "Proprietary",
+   "icon": "icons/discord.png",
+   "tags": [
+    "chat",
+    "voice",
+    "video",
+    "communities",
+    "gaming"
+   ],
+   "featured": true,
+   "popularity": 92,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Discord.Discord",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "discord",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.discordapp.Discord",
+      "official": true,
+      "note": "Publisher-verified on Flathub (website verification via discordapp.com)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "docker-desktop",
+   "name": "Docker Desktop",
+   "shortDescription": "Build and run containers on your desktop",
+   "description": "Desktop application for building, running, and managing Docker containers, with a GUI dashboard, Kubernetes support, and the Docker CLI included. Free for personal use and small businesses; larger companies need a paid subscription.",
+   "category": "developer-tools",
+   "homepage": "https://www.docker.com/products/docker-desktop/",
+   "license": "Proprietary",
+   "icon": "icons/docker-desktop.png",
+   "tags": [
+    "containers",
+    "devops",
+    "virtualization"
+   ],
+   "featured": false,
+   "popularity": 84,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Docker.DockerDesktop",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
       "id": "docker-desktop",
-      "name": "Docker Desktop",
-      "shortDescription": "Build and run containers on your desktop",
-      "description": "Desktop application for building, running, and managing Docker containers, with a GUI dashboard, Kubernetes support, and the Docker CLI included. Free for personal use and small businesses; larger companies need a paid subscription.",
-      "category": "developer-tools",
-      "homepage": "https://www.docker.com/products/docker-desktop/",
-      "license": "Proprietary",
-      "icon": "icons/docker-desktop.png",
-      "tags": [
-        "containers",
-        "devops",
-        "virtualization"
-      ],
-      "featured": false,
-      "popularity": 84,
-      "sources": {
-        "windows": [
-          {
-            "manager": "winget",
-            "id": "Docker.DockerDesktop",
-            "official": true
-          }
-        ],
-        "macos": [
-          {
-            "manager": "brew-cask",
-            "id": "docker-desktop",
-            "official": true,
-            "note": "Correction: current cask token is docker-desktop (v4.80.0); the old token 'docker' is listed in old_tokens and now refers to the CLI formula space."
-          }
-        ],
-        "linux": []
-      }
-    }
-  ]
+      "official": true,
+      "note": "Correction: current cask token is docker-desktop (v4.80.0); the old token 'docker' is listed in old_tokens and now refers to the CLI formula space."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "elgato-stream-deck",
+   "name": "Elgato Stream Deck",
+   "shortDescription": "Configuration software for Elgato Stream Deck macro keypads",
+   "description": "Elgato Stream Deck is the official companion software for Stream Deck hardware, letting you assign actions, plugins, and profiles to customizable LCD keys for streaming and productivity workflows.",
+   "category": "system-utilities",
+   "homepage": "https://www.elgato.com/s/downloads",
+   "license": "Proprietary",
+   "icon": "icons/elgato-stream-deck.png",
+   "tags": [
+    "streaming",
+    "macros",
+    "broadcasting",
+    "hardware",
+    "productivity"
+   ],
+   "featured": false,
+   "popularity": 65,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Elgato.StreamDeck",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "elgato-stream-deck",
+      "official": true,
+      "note": ".pkg installer; expect an admin-privilege prompt."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "epic-games-launcher",
+   "name": "Epic Games Launcher",
+   "shortDescription": "Epic Games Store client and game launcher",
+   "description": "Official client for the Epic Games Store. Claim the weekly free games, install and update your library, and launch titles like Fortnite and Unreal Engine tools.",
+   "category": "games-launchers",
+   "homepage": "https://store.epicgames.com",
+   "license": "Proprietary",
+   "icon": "icons/epic-games-launcher.png",
+   "tags": [
+    "games",
+    "launcher",
+    "store"
+   ],
+   "featured": true,
+   "popularity": 85,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "EpicGames.EpicGamesLauncher",
+      "official": true,
+      "note": "Confirmed at manifests/e/EpicGames/EpicGamesLauncher in microsoft/winget-pkgs."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "epic-games",
+      "official": true,
+      "note": "Cask; verified via formulae.brew.sh API."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "firefox",
+   "name": "Firefox",
+   "shortDescription": "Open-source browser from Mozilla",
+   "description": "Mozilla's free and open-source web browser, focused on privacy and standards compliance. The main independent alternative to Chromium-based browsers.",
+   "category": "browsers",
+   "homepage": "https://www.mozilla.org/firefox/",
+   "license": "MPL-2.0",
+   "icon": "icons/firefox.png",
+   "tags": [
+    "browser",
+    "web",
+    "open-source",
+    "privacy"
+   ],
+   "featured": true,
+   "popularity": 88,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Mozilla.Firefox",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "firefox",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "org.mozilla.firefox",
+      "official": true,
+      "note": "Official Mozilla-verified Flathub listing."
+     }
+    ]
+   }
+  },
+  {
+   "id": "gamesir-connect",
+   "name": "GameSir Connect",
+   "shortDescription": "Official companion software for GameSir game controllers",
+   "description": "GameSir's companion app for controllers such as the Cyclone 2 and T3 Pro: firmware updates, button remapping, and stick/trigger calibration. Published by Guangzhou Chicken Run Network Technology Co., Ltd (GameSir).",
+   "category": "games-launchers",
+   "homepage": "https://www.gamesir.hk/",
+   "license": "Proprietary",
+   "icon": "icons/gamesir-connect.png",
+   "tags": [
+    "controller",
+    "gaming",
+    "peripherals",
+    "firmware",
+    "configuration"
+   ],
+   "featured": false,
+   "popularity": 45,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "GameSir.GameSirConnect",
+      "official": true,
+      "note": "Also on the Microsoft Store as XPFMNZ2F440G2L if this id ever rots."
+     }
+    ],
+    "macos": [],
+    "linux": []
+   }
+  },
+  {
+   "id": "git",
+   "name": "Git",
+   "shortDescription": "Version control system for tracking code changes",
+   "description": "The standard distributed version control system. Tracks changes to files, lets multiple people work on the same codebase, and powers services like GitHub and GitLab. On Windows this is Git for Windows, which includes Git Bash.",
+   "category": "developer-tools",
+   "homepage": "https://git-scm.com",
+   "license": "GPL-2.0-only",
+   "icon": "icons/git.png",
+   "tags": [
+    "version-control",
+    "cli",
+    "programming",
+    "git-bash"
+   ],
+   "featured": true,
+   "popularity": 92,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Git.Git",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew",
+      "id": "git",
+      "official": true,
+      "note": "Homebrew formula (CLI tool), not a cask."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "google-chrome",
+   "name": "Google Chrome",
+   "shortDescription": "Google's fast, widely used web browser",
+   "description": "The world's most widely used web browser. Syncs bookmarks, passwords, and tabs across devices with a Google account, and supports a large extension ecosystem.",
+   "category": "browsers",
+   "homepage": "https://www.google.com/chrome/",
+   "license": "Proprietary",
+   "icon": "icons/google-chrome.png",
+   "tags": [
+    "browser",
+    "web",
+    "google",
+    "sync"
+   ],
+   "featured": true,
+   "popularity": 100,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Google.Chrome",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "google-chrome",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.google.Chrome",
+      "official": false,
+      "note": "Flathub listing exists but is a community-maintained wrapper, not verified by or affiliated with Google."
+     }
+    ]
+   }
+  },
+  {
+   "id": "handbrake",
+   "name": "HandBrake",
+   "shortDescription": "Converts video files to modern formats",
+   "description": "Converts video from nearly any format into widely supported codecs like H.264, H.265, and AV1. Includes device presets, batch queueing, subtitle handling, and DVD/Blu-ray ripping from unencrypted sources.",
+   "category": "media-creative",
+   "homepage": "https://handbrake.fr/",
+   "license": "GPL-2.0-only",
+   "icon": "icons/handbrake.png",
+   "tags": [
+    "video-conversion",
+    "transcoding",
+    "video",
+    "open-source"
+   ],
+   "featured": false,
+   "popularity": 72,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "HandBrake.HandBrake",
+      "official": true,
+      "note": "Confirmed in winget-pkgs at manifests/h/HandBrake/HandBrake."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "handbrake-app",
+      "official": true,
+      "note": "Corrected: cask was renamed from 'handbrake' to 'handbrake-app' (old token aliased). A separate 'handbrake' formula provides only HandBrakeCLI."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "fr.handbrake.ghb",
+      "official": true,
+      "note": "Flathub listing verified by publisher (website handbrake.fr)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "hermes-agent-cli",
+   "name": "Hermes Agent CLI",
+   "shortDescription": "Nous Research's self-improving AI agent for the terminal, with a closed...",
+   "description": "Hermes Agent is Nous Research's open-source (MIT) self-improving AI agent: it creates skills from experience, improves them during use, and runs locally, on a VPS, or serverless — reachable from the terminal TUI or messaging platforms (Telegram, Discord, Slack, WhatsApp, Signal). Model-agnostic across Nous Portal, OpenRouter, OpenAI, and any compatible endpoint.",
+   "category": "ai-tools",
+   "homepage": "https://hermes-agent.nousresearch.com/",
+   "license": "MIT",
+   "icon": "icons/hermes-agent-cli.png",
+   "tags": [
+    "ai",
+    "agent",
+    "cli",
+    "self-improving",
+    "open-source"
+   ],
+   "featured": false,
+   "popularity": 55,
+   "sources": {
+    "windows": [],
+    "macos": [
+     {
+      "manager": "brew",
+      "id": "hermes-agent",
+      "official": true
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "lm-studio",
+   "name": "LM Studio",
+   "shortDescription": "Desktop app to discover, download, and run local LLMs privately",
+   "description": "LM Studio (Element Labs) is a cross-platform desktop app for discovering, downloading, and running open-weight LLMs locally with GPU acceleration, a chat UI, and an OpenAI-compatible local server. Free for personal use.",
+   "category": "ai-tools",
+   "homepage": "https://lmstudio.ai/",
+   "license": "Proprietary",
+   "icon": "icons/lm-studio.png",
+   "tags": [
+    "llm",
+    "local-ai",
+    "inference",
+    "desktop",
+    "models"
+   ],
+   "featured": false,
+   "popularity": 82,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "ElementLabs.LMStudio",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "lm-studio",
+      "official": true,
+      "note": "v0.4.18,1 — installs 'LM Studio.app' to /Applications without sudo; in step with winget."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "ai.lmstudio.lm-studio",
+      "official": false,
+      "note": "Community Flathub packaging of the official Linux build."
+     }
+    ]
+   }
+  },
+  {
+   "id": "medal-tv",
+   "name": "Medal.tv",
+   "shortDescription": "Game clip recorder and sharing platform",
+   "description": "Medal.tv records and clips gameplay in the background without dropping frames, with built-in editing and one-click sharing to Medal and other social platforms. Published by Medal B.V.",
+   "category": "games-launchers",
+   "homepage": "https://medal.tv/",
+   "license": "Proprietary",
+   "icon": "icons/medal-tv.png",
+   "tags": [
+    "gaming",
+    "clips",
+    "screen-recording",
+    "video",
+    "sharing"
+   ],
+   "featured": false,
+   "popularity": 60,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "MedalB.V.Medal",
+      "official": true,
+      "note": "Stub installer that pulls the latest Medal build and self-updates."
+     }
+    ],
+    "macos": [],
+    "linux": []
+   }
+  },
+  {
+   "id": "mobaxterm",
+   "name": "MobaXterm",
+   "shortDescription": "All-in-one Windows terminal with SSH, X11 server, RDP, and SFTP",
+   "description": "MobaXterm is a Windows remote-computing toolbox combining SSH, RDP, VNC, SFTP, Telnet, and an integrated X11 server with a tabbed terminal and Unix commands. The Home Edition is free for personal and professional use.",
+   "category": "system-utilities",
+   "homepage": "https://mobaxterm.mobatek.net/",
+   "license": "Proprietary",
+   "icon": "icons/mobaxterm.png",
+   "tags": [
+    "ssh",
+    "terminal",
+    "x11",
+    "sftp",
+    "remote"
+   ],
+   "featured": false,
+   "popularity": 70,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Mobatek.MobaXterm",
+      "official": true
+     }
+    ],
+    "macos": [],
+    "linux": []
+   }
+  },
+  {
+   "id": "multimc",
+   "name": "MultiMC",
+   "shortDescription": "Minecraft launcher for managing multiple isolated instances",
+   "description": "MultiMC is an alternative Minecraft launcher that keeps multiple cleanly separated game instances — each with its own mods, resource packs, and settings — with fine-grained Java control and modpack import from Modrinth, CurseForge, Technic, and more.",
+   "category": "games-launchers",
+   "homepage": "https://multimc.org/",
+   "license": "Apache-2.0 AND MS-PL",
+   "icon": "icons/multimc.png",
+   "tags": [
+    "minecraft",
+    "launcher",
+    "gaming",
+    "mods",
+    "open-source"
+   ],
+   "featured": false,
+   "popularity": 50,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "MultiMC.MultiMC",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "multimc",
+      "official": true,
+      "note": "Cask is deprecated (fails Gatekeeper) and will be disabled 2026-09-01; prefer Prism Launcher on macOS."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "notepad-plus-plus",
+   "name": "Notepad++",
+   "shortDescription": "Free open-source text and source code editor for Windows",
+   "description": "Notepad++ is a free, GPL-licensed source code editor and Notepad replacement for Windows, supporting syntax highlighting for dozens of languages with a lightweight footprint.",
+   "category": "developer-tools",
+   "homepage": "https://notepad-plus-plus.org/",
+   "license": "GPL-3.0-or-later",
+   "icon": "icons/notepad-plus-plus.png",
+   "tags": [
+    "editor",
+    "text",
+    "development",
+    "open-source",
+    "windows"
+   ],
+   "featured": false,
+   "popularity": 84,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Notepad++.Notepad++",
+      "official": true
+     }
+    ],
+    "macos": [],
+    "linux": []
+   }
+  },
+  {
+   "id": "notion",
+   "name": "Notion",
+   "shortDescription": "All-in-one workspace for notes, docs, and tasks",
+   "description": "A connected workspace for notes, documents, wikis, project tracking, and databases. The desktop app syncs with Notion's cloud service and supports team collaboration.",
+   "category": "productivity",
+   "homepage": "https://www.notion.com",
+   "license": "Proprietary",
+   "icon": "icons/notion.png",
+   "tags": [
+    "notes",
+    "wiki",
+    "project-management",
+    "collaboration",
+    "databases"
+   ],
+   "featured": true,
+   "popularity": 90,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Notion.Notion",
+      "official": true,
+      "note": "Confirmed at manifests/n/Notion/Notion; latest manifest 7.0.0."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "notion",
+      "official": true,
+      "note": "Cask, version 7.24.0."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "nvidia-app",
+   "name": "NVIDIA App",
+   "shortDescription": "NVIDIA's unified companion app for GeForce drivers, settings, and recording",
+   "description": "The NVIDIA App is the official companion application for GeForce GPUs, unifying driver updates, game optimization, GPU settings, and ShadowPlay capture. It replaced GeForce Experience as NVIDIA's current desktop software starting in late 2024.",
+   "category": "system-utilities",
+   "homepage": "https://www.nvidia.com/en-us/software/nvidia-app/",
+   "license": "Proprietary",
+   "icon": "icons/nvidia-app.png",
+   "tags": [
+    "gpu",
+    "drivers",
+    "gaming",
+    "nvidia",
+    "recording"
+   ],
+   "featured": false,
+   "popularity": 85,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "XP8CLZL93F5Z4P",
+      "official": true,
+      "note": "Microsoft Store listing; winget resolves it through its msstore source."
+     }
+    ],
+    "macos": [],
+    "linux": []
+   }
+  },
+  {
+   "id": "obs-studio",
+   "name": "OBS Studio",
+   "shortDescription": "Free screen recording and live streaming",
+   "description": "Records your screen, webcam, and audio, and streams live to platforms like Twitch and YouTube. The standard tool for screen capture and streaming, with scenes, sources, and audio mixing built in.",
+   "category": "media-creative",
+   "homepage": "https://obsproject.com/",
+   "license": "GPL-2.0-or-later",
+   "icon": "icons/obs-studio.png",
+   "tags": [
+    "screen-recording",
+    "live-streaming",
+    "video",
+    "open-source"
+   ],
+   "featured": true,
+   "popularity": 90,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "OBSProject.OBSStudio",
+      "official": true,
+      "note": "Confirmed in winget-pkgs at manifests/o/OBSProject/OBSStudio (latest 32.1.2)."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "obs",
+      "official": true,
+      "note": "Cask token 'obs', HTTP 200 on formulae.brew.sh."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.obsproject.Studio",
+      "official": true,
+      "note": "Flathub listing verified by publisher (website obsproject.com)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "obsidian",
+   "name": "Obsidian",
+   "shortDescription": "Note-taking app built on local Markdown files",
+   "description": "A knowledge base and note-taking app that works on top of a local folder of plain-text Markdown files. Supports linking notes together, a graph view, and a large plugin ecosystem, with your data staying on your own machine.",
+   "category": "productivity",
+   "homepage": "https://obsidian.md",
+   "license": "Proprietary",
+   "icon": "icons/obsidian.png",
+   "tags": [
+    "notes",
+    "markdown",
+    "knowledge-base",
+    "pkm",
+    "writing"
+   ],
+   "featured": true,
+   "popularity": 88,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Obsidian.Obsidian",
+      "official": true,
+      "note": "Confirmed at manifests/o/Obsidian/Obsidian; latest manifest 1.12.7."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "obsidian",
+      "official": true,
+      "note": "Cask, version 1.12.7."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "md.obsidian.Obsidian",
+      "official": true,
+      "note": "Verified-publisher listing (verified via obsidian.md), though Obsidian marks the Flatpak distribution as unsupported."
+     }
+    ]
+   }
+  },
+  {
+   "id": "opera-gx",
+   "name": "Opera GX",
+   "shortDescription": "Gaming-focused web browser with CPU/RAM/network limiters",
+   "description": "Opera GX is a Chromium-based browser built for gamers, adding GX Control resource limiters, Twitch/Discord sidebar integrations, and heavy theming on top of Opera's privacy and efficiency features.",
+   "category": "browsers",
+   "homepage": "https://www.opera.com/gx",
+   "license": "Proprietary",
+   "icon": "icons/opera-gx.png",
+   "tags": [
+    "browser",
+    "gaming",
+    "chromium",
+    "web",
+    "customization"
+   ],
+   "featured": false,
+   "popularity": 70,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Opera.OperaGX",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "opera-gx",
+      "official": true,
+      "note": "Cask confirmed via formulae.brew.sh API (HTTP 200). Version 132.0.5905.110; installs 'Opera GX.app' to /Applications without sudo."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.opera.opera-gx",
+      "official": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "oracle-jdk",
+   "name": "Oracle JDK",
+   "shortDescription": "Oracle's official Java SE Development Kit, current release (JDK 26)",
+   "description": "The Oracle JDK is Oracle's official build of the Java SE Development Kit for building and running Java applications. As of July 2026 the newest release line is JDK 26 (26.0.1), distributed under the Oracle No-Fee Terms and Conditions.",
+   "category": "developer-tools",
+   "homepage": "https://www.oracle.com/java/",
+   "license": "Proprietary",
+   "icon": "icons/oracle-jdk.png",
+   "tags": [
+    "java",
+    "jdk",
+    "development",
+    "runtime",
+    "programming"
+   ],
+   "featured": false,
+   "popularity": 62,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Oracle.JDK.26",
+      "official": true,
+      "note": "Per-major-version id: bump to Oracle.JDK.<n> each March/September JDK release."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "oracle-jdk",
+      "official": true,
+      "note": "HTTP 200; version 26.0.1. Installs via .pkg installer requiring admin/sudo (pkgutil id com.oracle.jdk-26.0.1), not a drag-to-/Applications app. Cask token is version-less and tracks the latest release automatically."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "prism-launcher",
+   "name": "Prism Launcher",
+   "shortDescription": "Open-source Minecraft launcher with instances",
+   "description": "A free, open-source Minecraft launcher that manages multiple isolated game instances, mod loaders, and modpacks side by side. Community fork of MultiMC.",
+   "category": "games-launchers",
+   "homepage": "https://prismlauncher.org",
+   "license": "GPL-3.0-only",
+   "icon": "icons/prism-launcher.png",
+   "tags": [
+    "games",
+    "minecraft",
+    "launcher",
+    "open-source",
+    "mods"
+   ],
+   "featured": false,
+   "popularity": 55,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "PrismLauncher.PrismLauncher",
+      "official": true,
+      "note": "Confirmed at manifests/p/PrismLauncher/PrismLauncher in microsoft/winget-pkgs."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "prismlauncher",
+      "official": true,
+      "note": "Cask; verified via formulae.brew.sh API."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "org.prismlauncher.PrismLauncher",
+      "official": true,
+      "note": "Verified-publisher listing on Flathub (verification_verified: true)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "python-3",
+   "name": "Python 3",
+   "shortDescription": "Popular programming language and interpreter",
+   "description": "The Python programming language interpreter and standard library. Widely used for scripting, automation, data science, and web development. Installs the current stable 3.14 series.",
+   "category": "developer-tools",
+   "homepage": "https://www.python.org",
+   "license": "Python-2.0",
+   "icon": "icons/python-3.png",
+   "tags": [
+    "programming",
+    "language",
+    "runtime",
+    "cli"
+   ],
+   "featured": false,
+   "popularity": 90,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Python.Python.3.14",
+      "official": true,
+      "note": "Correction from candidate Python.Python.3.13: winget minor-version folders under Python.Python.3 go up to 14, matching current stable 3.14."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew",
+      "id": "python@3.14",
+      "official": true,
+      "note": "Homebrew formula, not a cask. The bare 'python' name is only an alias (API endpoint for it 404s); 'python' and 'python3' both resolve to python@3.14 (3.14.6)."
+     }
+    ],
+    "linux": []
+   }
+  },
+  {
+   "id": "rustdesk",
+   "name": "RustDesk",
+   "shortDescription": "Open-source remote desktop with optional self-hosted relay",
+   "description": "RustDesk is an open-source remote desktop and screen-sharing application, positioned as a TeamViewer alternative. It works out of the box with public rendezvous servers or a fully self-hosted relay.",
+   "category": "system-utilities",
+   "homepage": "https://rustdesk.com/",
+   "license": "AGPL-3.0-only",
+   "icon": "icons/rustdesk.png",
+   "tags": [
+    "remote-desktop",
+    "screen-sharing",
+    "open-source",
+    "self-hosted",
+    "remote-access"
+   ],
+   "featured": false,
+   "popularity": 72,
+   "sources": {
+    "windows": [],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "rustdesk",
+      "official": true,
+      "note": "Cask version 1.4.8; installs RustDesk.app to /Applications, no sudo. Requires macOS 12+; Apple Silicon and Intel builds."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.rustdesk.RustDesk",
+      "official": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "signal",
+   "name": "Signal",
+   "shortDescription": "Private, end-to-end encrypted messaging",
+   "description": "Messaging app with end-to-end encryption on by default for texts, calls, and file sharing. Run by a nonprofit; the desktop app links to Signal on your phone.",
+   "category": "communication",
+   "homepage": "https://signal.org/",
+   "license": "AGPL-3.0-only",
+   "icon": "icons/signal.png",
+   "tags": [
+    "chat",
+    "privacy",
+    "encryption",
+    "messaging"
+   ],
+   "featured": false,
+   "popularity": 72,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "OpenWhisperSystems.Signal",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "signal",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "org.signal.Signal",
+      "official": false,
+      "note": "Community-maintained Flatpak; not officially endorsed or maintained by Signal Foundation. Signal officially distributes a Debian apt repo instead."
+     }
+    ]
+   }
+  },
+  {
+   "id": "slack",
+   "name": "Slack",
+   "shortDescription": "Team messaging organized into channels",
+   "description": "Workplace messaging app with channels, threads, huddles, and file sharing. The standard team chat tool at many companies, with a large ecosystem of integrations.",
+   "category": "communication",
+   "homepage": "https://slack.com/",
+   "license": "Proprietary",
+   "icon": "icons/slack.png",
+   "tags": [
+    "chat",
+    "teams",
+    "work",
+    "collaboration"
+   ],
+   "featured": false,
+   "popularity": 88,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "SlackTechnologies.Slack",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "slack",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.slack.Slack",
+      "official": false,
+      "note": "Community-maintained wrapper; Flathub listing states it is not verified by or affiliated with Slack Technologies. Slack for Linux is beta."
+     }
+    ]
+   }
+  },
+  {
+   "id": "spotify",
+   "name": "Spotify",
+   "shortDescription": "Music and podcast streaming service",
+   "description": "Spotify's desktop client for streaming millions of tracks, podcasts, and playlists, with cross-device sync and personalized recommendations. Published by Spotify AB.",
+   "category": "media-creative",
+   "homepage": "https://www.spotify.com/",
+   "license": "Proprietary",
+   "icon": "icons/spotify.png",
+   "tags": [
+    "music",
+    "streaming",
+    "audio",
+    "podcasts",
+    "entertainment"
+   ],
+   "featured": true,
+   "popularity": 94,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Spotify.Spotify",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "spotify",
+      "official": true,
+      "note": "Cask confirmed via formulae.brew.sh API (HTTP 200). Version 1.2.92.148; installs Spotify.app to /Applications without sudo."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.spotify.Client",
+      "official": false,
+      "note": "Community-maintained repackage of Spotify’s Linux client."
+     }
+    ]
+   }
+  },
+  {
+   "id": "steam",
+   "name": "Steam",
+   "shortDescription": "The biggest PC game store and library",
+   "description": "Valve's game store and launcher. Buy, download, and play PC games, keep them updated automatically, and sync saves and friends lists across machines.",
+   "category": "games-launchers",
+   "homepage": "https://store.steampowered.com",
+   "license": "Proprietary",
+   "icon": "icons/steam.png",
+   "tags": [
+    "games",
+    "launcher",
+    "store",
+    "library"
+   ],
+   "featured": true,
+   "popularity": 98,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Valve.Steam",
+      "official": true,
+      "note": "Confirmed at manifests/v/Valve/Steam in microsoft/winget-pkgs. Single version folder because Steam self-updates after install."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "steam",
+      "official": true,
+      "note": "Cask; verified via formulae.brew.sh API."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.valvesoftware.Steam",
+      "official": false,
+      "note": "ID confirmed to exist on Flathub, but the listing is community-maintained and not verified by Valve (verification field is null)."
+     }
+    ]
+   }
+  },
+  {
+   "id": "telegram-desktop",
+   "name": "Telegram",
+   "shortDescription": "Official desktop client for the Telegram messenger",
+   "description": "Telegram Desktop is the official cross-platform desktop client for the Telegram messaging service, focused on speed and security with cloud-synced chats and unlimited media sharing.",
+   "category": "communication",
+   "homepage": "https://desktop.telegram.org/",
+   "license": "GPL-3.0-only",
+   "icon": "icons/telegram-desktop.png",
+   "tags": [
+    "messaging",
+    "chat",
+    "communication",
+    "social"
+   ],
+   "featured": false,
+   "popularity": 88,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Telegram.TelegramDesktop",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "telegram-desktop",
+      "official": true,
+      "note": "HTTP 200; version 6.9.3, installs 'Telegram Desktop.app' to /Applications without sudo. This is the Qt tdesktop client matching the product identity; a different cask 'telegram' ships Telegram's native Swift macOS app."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "org.telegram.desktop",
+      "official": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "termius",
+   "name": "Termius",
+   "shortDescription": "Cross-platform SSH client with sync, SFTP, and port forwarding",
+   "description": "Termius is a modern SSH and SFTP client with encrypted cross-device sync, snippets, port forwarding, and team sharing. It runs on desktop and mobile with a freemium subscription model.",
+   "category": "system-utilities",
+   "homepage": "https://termius.com/",
+   "license": "Proprietary",
+   "icon": "icons/termius.png",
+   "tags": [
+    "ssh",
+    "sftp",
+    "terminal",
+    "remote",
+    "cross-platform"
+   ],
+   "featured": false,
+   "popularity": 66,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Termius.Termius",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "termius",
+      "official": true,
+      "note": "Cask version 9.40.1; installs Termius.app to /Applications, no sudo. sha256 is :no_check (vendor serves an unversioned auto-update URL) — mild rot/pinning caveat."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.termius.Termius",
+      "official": false,
+      "note": "Community Flathub wrapper; vendor’s own Linux channel is Snap."
+     }
+    ]
+   }
+  },
+  {
+   "id": "visual-studio-code",
+   "name": "Visual Studio Code",
+   "shortDescription": "Microsoft's free code editor with extensions",
+   "description": "A free code editor from Microsoft with built-in Git support, debugging, and a large extension marketplace. The most widely used editor for general-purpose programming and web development.",
+   "category": "developer-tools",
+   "homepage": "https://code.visualstudio.com",
+   "license": "Proprietary",
+   "icon": "icons/visual-studio-code.png",
+   "tags": [
+    "editor",
+    "ide",
+    "programming",
+    "microsoft"
+   ],
+   "featured": true,
+   "popularity": 96,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "Microsoft.VisualStudioCode",
+      "official": true
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "visual-studio-code",
+      "official": true
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "com.visualstudio.code",
+      "official": false,
+      "note": "Exists on Flathub but is a community-maintained repackaging of Microsoft's proprietary build, explicitly not supported by Microsoft; Flathub verification field is null."
+     }
+    ]
+   }
+  },
+  {
+   "id": "vlc",
+   "name": "VLC",
+   "shortDescription": "Plays almost any video or audio file",
+   "description": "A media player that handles nearly every video and audio format without extra codecs, plus DVDs, audio CDs, and network streams. It can also convert files and record your desktop or streams.",
+   "category": "media-creative",
+   "homepage": "https://www.videolan.org/vlc/",
+   "license": "GPL-2.0-or-later",
+   "icon": "icons/vlc.png",
+   "tags": [
+    "media-player",
+    "video",
+    "audio",
+    "open-source"
+   ],
+   "featured": true,
+   "popularity": 95,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "VideoLAN.VLC",
+      "official": true,
+      "note": "Confirmed in winget-pkgs at manifests/v/VideoLAN/VLC."
+     }
+    ],
+    "macos": [
+     {
+      "manager": "brew-cask",
+      "id": "vlc",
+      "official": true,
+      "note": "Cask token 'vlc', HTTP 200 on formulae.brew.sh."
+     }
+    ],
+    "linux": [
+     {
+      "manager": "flatpak",
+      "id": "org.videolan.VLC",
+      "official": false,
+      "note": "ID exists on Flathub but the listing is not publisher-verified (community-maintained)."
+     }
+    ]
+   }
+  }
+ ]
 }
