@@ -72,7 +72,17 @@ fn hex(bytes: &[u8]) -> String {
 fn load(app: &tauri::AppHandle, sub: &str) -> Result<Profile, String> {
     let path = profile_path(app, sub)?;
     match std::fs::read_to_string(&path) {
-        Ok(text) => serde_json::from_str(&text).map_err(|e| format!("profile is corrupt: {e}")),
+        Ok(text) => match serde_json::from_str(&text) {
+            Ok(profile) => Ok(profile),
+            // Corrupt (e.g. an interrupted write): set it aside and start
+            // fresh so the whole feature self-heals instead of erroring
+            // forever. The backup keeps the bytes for recovery.
+            Err(e) => {
+                eprintln!("outfitter: profile unreadable ({e}); resetting");
+                let _ = std::fs::rename(&path, path.with_extension("json.corrupt"));
+                Ok(Profile::default())
+            }
+        },
         Err(ref e) if e.kind() == std::io::ErrorKind::NotFound => Ok(Profile::default()),
         Err(e) => Err(format!("couldn't read profile: {e}")),
     }
@@ -81,7 +91,11 @@ fn load(app: &tauri::AppHandle, sub: &str) -> Result<Profile, String> {
 fn save(app: &tauri::AppHandle, sub: &str, profile: &Profile) -> Result<(), String> {
     let path = profile_path(app, sub)?;
     let text = serde_json::to_string_pretty(profile).map_err(|e| format!("serialize: {e}"))?;
-    std::fs::write(&path, text).map_err(|e| format!("couldn't save profile: {e}"))
+    // Write to a temp file then rename: a crash mid-write can't corrupt the
+    // real profile (rename is atomic on the same filesystem).
+    let tmp = path.with_extension("json.tmp");
+    std::fs::write(&tmp, text).map_err(|e| format!("couldn't save profile: {e}"))?;
+    std::fs::rename(&tmp, &path).map_err(|e| format!("couldn't save profile: {e}"))
 }
 
 fn require(sub: &str) -> Result<(), String> {

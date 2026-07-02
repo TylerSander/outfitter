@@ -276,20 +276,26 @@ export const useStore = create<OutfitterStore>()((set, get) => {
       }
       // Silently restore a prior sign-in; if none and the welcome has never
       // been shown, open it (first-run login/create-account gate).
+      set({ authBusy: true });
       try {
         const session = await ipc.restoreSession();
         if (session !== null) {
-          set({ session });
+          set({ session, authBusy: false });
           void get().loadProfile();
-        } else if (localStorage.getItem("outfitter.welcomed") === null) {
-          set({ welcomeOpen: true });
+        } else {
+          set({ authBusy: false });
+          if (localStorage.getItem("outfitter.welcomed") === null) {
+            set({ welcomeOpen: true });
+          }
         }
       } catch {
         // offline / no keychain — stay signed out, no gate
+        set({ authBusy: false });
       }
     },
 
     login: async () => {
+      if (get().authBusy) return; // ignore double-dispatch (double-click, etc.)
       set({ authBusy: true, authError: null });
       try {
         const session = await ipc.login();
@@ -325,11 +331,14 @@ export const useStore = create<OutfitterStore>()((set, get) => {
     loadProfile: async () => {
       const session = get().session;
       if (session === null) return;
+      const sub = session.user.id;
       set({ profileBusy: true, profileError: null });
       try {
-        const profile = await ipc.getProfile(session.user.id);
+        const profile = await ipc.getProfile(sub);
+        if (get().session?.user.id !== sub) return; // signed out / switched
         set({ profile, profileBusy: false });
       } catch (err) {
+        if (get().session?.user.id !== sub) return;
         set({
           profileBusy: false,
           profileError: err instanceof Error ? err.message : String(err),
@@ -340,11 +349,14 @@ export const useStore = create<OutfitterStore>()((set, get) => {
     setDisplayName: async (name) => {
       const session = get().session;
       if (session === null) return;
+      const sub = session.user.id;
       set({ profileBusy: true, profileError: null });
       try {
-        const profile = await ipc.setDisplayName(session.user.id, name);
+        const profile = await ipc.setDisplayName(sub, name);
+        if (get().session?.user.id !== sub) return;
         set({ profile, profileBusy: false });
       } catch (err) {
+        if (get().session?.user.id !== sub) return;
         set({
           profileBusy: false,
           profileError: err instanceof Error ? err.message : String(err),
@@ -355,15 +367,14 @@ export const useStore = create<OutfitterStore>()((set, get) => {
     addSavedApp: async (entry) => {
       const session = get().session;
       if (session === null) return;
+      const sub = session.user.id;
       set({ profileBusy: true, profileError: null });
       try {
-        const profile = await ipc.addSavedApp(
-          session.user.id,
-          entry,
-          new Date().toISOString(),
-        );
+        const profile = await ipc.addSavedApp(sub, entry, new Date().toISOString());
+        if (get().session?.user.id !== sub) return;
         set({ profile, profileBusy: false });
       } catch (err) {
+        if (get().session?.user.id !== sub) return;
         set({
           profileBusy: false,
           profileError: err instanceof Error ? err.message : String(err),
@@ -374,11 +385,14 @@ export const useStore = create<OutfitterStore>()((set, get) => {
     removeSavedApp: async (id) => {
       const session = get().session;
       if (session === null) return;
+      const sub = session.user.id;
       set({ profileBusy: true, profileError: null });
       try {
-        const profile = await ipc.removeSavedApp(session.user.id, id);
+        const profile = await ipc.removeSavedApp(sub, id);
+        if (get().session?.user.id !== sub) return;
         set({ profile, profileBusy: false });
       } catch (err) {
+        if (get().session?.user.id !== sub) return;
         set({
           profileBusy: false,
           profileError: err instanceof Error ? err.message : String(err),

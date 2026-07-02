@@ -99,7 +99,13 @@ struct Callback {
 
 /// Accept HTTP connections on `listener` until one arrives at
 /// `/oauth/callback` carrying the expected `state`, then return its `code`.
-/// Every request gets a small HTML reply. Times out after CALLBACK_TIMEOUT.
+///
+/// SECURITY: only a request whose `state` matches our unguessable token is
+/// terminal. The loopback port has no per-process isolation, so any local
+/// process could otherwise send `?error=` or a bogus state to abort sign-in
+/// (a DoS). Requests without the right state get a 404 and are IGNORED — the
+/// loop keeps waiting so the real browser redirect still wins the race.
+/// Times out after CALLBACK_TIMEOUT.
 fn await_callback(listener: &TcpListener, expected_state: &str) -> Result<Callback, String> {
     listener
         .set_nonblocking(true)
@@ -112,9 +118,7 @@ fn await_callback(listener: &TcpListener, expected_state: &str) -> Result<Callba
         }
         match listener.accept() {
             Ok((mut stream, _)) => {
-                let mut buf = [0u8; 2048];
-                let n = stream.read(&mut buf).unwrap_or(0);
-                let request = String::from_utf8_lossy(&buf[..n]);
+                let request = read_request_head(&mut stream);
                 let path = request
                     .lines()
                     .next()
@@ -123,24 +127,23 @@ fn await_callback(listener: &TcpListener, expected_state: &str) -> Result<Callba
 
                 if let Some(query) = path.strip_prefix("/oauth/callback?") {
                     let params = parse_query(query);
-                    // The user may have hit Cancel on the hosted page.
+                    // Ignore anything not bearing our state (bogus/hostile
+                    // requests can't abort a still-pending real sign-in).
+                    if params.get("state").map(String::as_str) != Some(expected_state) {
+                        respond(&mut stream, RESULT_HTML_404);
+                        continue;
+                    }
+                    // State matches → this is our redirect. Honor cancel/code.
                     if let Some(err) = params.get("error") {
                         respond(&mut stream, RESULT_HTML_ERROR);
                         return Err(format!("Sign-in was cancelled or failed ({err})."));
                     }
-                    let state = params.get("state").map(String::as_str).unwrap_or("");
-                    let code = params.get("code").cloned();
-                    // Constant-ish comparison; state is our own random token.
-                    if state != expected_state {
-                        respond(&mut stream, RESULT_HTML_ERROR);
-                        return Err("Sign-in could not be verified (state mismatch).".to_string());
-                    }
-                    match code {
-                        Some(code) if !code.is_empty() => {
+                    match params.get("code").filter(|c| !c.is_empty()) {
+                        Some(code) => {
                             respond(&mut stream, RESULT_HTML_OK);
-                            return Ok(Callback { code });
+                            return Ok(Callback { code: code.clone() });
                         }
-                        _ => {
+                        None => {
                             respond(&mut stream, RESULT_HTML_ERROR);
                             return Err("Sign-in response was missing its code.".to_string());
                         }
@@ -155,6 +158,27 @@ fn await_callback(listener: &TcpListener, expected_state: &str) -> Result<Callba
             Err(e) => return Err(format!("callback server error: {e}")),
         }
     }
+}
+
+/// Read up to the end of the HTTP request line (first `\n`), with a short
+/// read timeout so a slow/hostile connection can't stall the accept loop.
+fn read_request_head(stream: &mut std::net::TcpStream) -> String {
+    let _ = stream.set_read_timeout(Some(Duration::from_secs(2)));
+    let mut data = Vec::new();
+    let mut buf = [0u8; 1024];
+    loop {
+        match stream.read(&mut buf) {
+            Ok(0) => break,
+            Ok(n) => {
+                data.extend_from_slice(&buf[..n]);
+                if data.contains(&b'\n') || data.len() > 8192 {
+                    break;
+                }
+            }
+            Err(_) => break,
+        }
+    }
+    String::from_utf8_lossy(&data).into_owned()
 }
 
 fn parse_query(query: &str) -> std::collections::HashMap<String, String> {
@@ -202,17 +226,35 @@ const RESULT_HTML_404: &str = "<!doctype html><title>Not found</title>";
 
 // ---- token exchange (ureq; pure-Rust TLS) ----------------------------------
 
-fn exchange(body: serde_json::Value) -> Result<AuthResponse, String> {
-    let resp = ureq::post(&format!("{AUTH_BASE}/authenticate")).send_json(body);
-    match resp {
+/// `Rejected` = the server refused the credential (401/403) → the stored
+/// token is truly dead. `Transient` = network/5xx/parse → the token is still
+/// probably valid; callers must NOT delete it just because of a bad launch.
+enum ExchangeError {
+    Rejected,
+    Transient(String),
+}
+
+impl ExchangeError {
+    fn message(&self) -> String {
+        match self {
+            ExchangeError::Rejected => "Sign-in was rejected. Please try again.".to_string(),
+            ExchangeError::Transient(m) => m.clone(),
+        }
+    }
+}
+
+fn exchange(body: serde_json::Value) -> Result<AuthResponse, ExchangeError> {
+    match ureq::post(&format!("{AUTH_BASE}/authenticate")).send_json(body) {
         Ok(r) => r
             .into_json::<AuthResponse>()
-            .map_err(|e| format!("couldn't read the sign-in response: {e}")),
-        Err(ureq::Error::Status(401 | 403, _)) => {
-            Err("Sign-in was rejected. Please try again.".to_string())
+            .map_err(|e| ExchangeError::Transient(format!("couldn't read the sign-in response: {e}"))),
+        Err(ureq::Error::Status(401 | 403, _)) => Err(ExchangeError::Rejected),
+        Err(ureq::Error::Status(code, _)) => {
+            Err(ExchangeError::Transient(format!("Sign-in failed (HTTP {code}).")))
         }
-        Err(ureq::Error::Status(code, _)) => Err(format!("Sign-in failed (HTTP {code}).")),
-        Err(e) => Err(format!("Couldn't reach the sign-in service: {e}")),
+        Err(e) => Err(ExchangeError::Transient(format!(
+            "Couldn't reach the sign-in service: {e}"
+        ))),
     }
 }
 
@@ -275,9 +317,14 @@ pub fn login_blocking(app: &tauri::AppHandle) -> Result<Session, String> {
         "client_id": CLIENT_ID,
         "code": callback.code,
         "code_verifier": verifier,
-    }))?;
+    }))
+    .map_err(|e| e.message())?;
 
-    store_refresh(&auth.refresh_token)?;
+    // A keychain write failure shouldn't fail an otherwise-successful sign-in;
+    // the session works for now, it just won't persist across restarts.
+    if let Err(e) = store_refresh(&auth.refresh_token) {
+        eprintln!("outfitter: {e}");
+    }
     Ok(Session {
         user: auth.user.into(),
         access_token: auth.access_token,
@@ -295,18 +342,23 @@ pub fn restore_blocking() -> Result<Option<Session>, String> {
         "refresh_token": refresh,
     })) {
         Ok(auth) => {
-            // Refresh tokens rotate on use — persist the new one.
-            store_refresh(&auth.refresh_token)?;
+            // Refresh tokens rotate on use — persist the new one, but a
+            // keychain hiccup shouldn't drop the session we just restored.
+            if let Err(e) = store_refresh(&auth.refresh_token) {
+                eprintln!("outfitter: {e}");
+            }
             Ok(Some(Session {
                 user: auth.user.into(),
                 access_token: auth.access_token,
             }))
         }
-        // A rejected/expired refresh token means "signed out", not an error.
-        Err(_) => {
+        // Only a hard rejection means the token is dead — delete it. A
+        // transient failure (offline, 5xx) keeps the token for next launch.
+        Err(ExchangeError::Rejected) => {
             clear_refresh();
             Ok(None)
         }
+        Err(ExchangeError::Transient(_)) => Ok(None),
     }
 }
 
