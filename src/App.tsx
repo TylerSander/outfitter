@@ -5,6 +5,7 @@ import Discover from "./components/Discover";
 import AppGrid from "./components/AppGrid";
 import MyApps from "./components/MyApps";
 import AppDetail from "./components/AppDetail";
+import UpdateBanner from "./components/UpdateBanner";
 
 export default function App() {
   const init = useStore((s) => s.init);
@@ -180,6 +181,7 @@ export default function App() {
       </div>
 
       <AppDetail />
+      <UpdateBanner />
     </div>
   );
 }

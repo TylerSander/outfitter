@@ -1,7 +1,7 @@
 {
  "schemaVersion": 1,
- "catalogVersion": "2026.07.01-2",
- "updatedAt": "2026-07-01T23:30:00Z",
+ "catalogVersion": "2026.07.02-1",
+ "updatedAt": "2026-07-02T05:00:00Z",
  "categories": [
   {
    "id": "browsers",
@@ -1691,6 +1691,37 @@
       "note": "ID exists on Flathub but the listing is not publisher-verified (community-maintained)."
      }
     ]
+   }
+  },
+  {
+   "id": "willow-voice",
+   "name": "Willow Voice",
+   "shortDescription": "AI voice typing that works in every app",
+   "description": "Willow is a system-wide AI dictation tool: speak and it types into any Windows application — email, chat, code, or docs. Published by Willow Care Inc.",
+   "category": "ai-tools",
+   "homepage": "https://willowvoice.com",
+   "license": "Proprietary",
+   "icon": "icons/willow-voice.png",
+   "tags": [
+    "dictation",
+    "voice",
+    "ai",
+    "speech-to-text",
+    "accessibility"
+   ],
+   "featured": false,
+   "popularity": 58,
+   "sources": {
+    "windows": [
+     {
+      "manager": "winget",
+      "id": "XP9CNBC75HD844",
+      "official": true,
+      "note": "Microsoft Store listing; winget resolves it through its msstore source."
+     }
+    ],
+    "macos": [],
+    "linux": []
    }
   }
  ]
