@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "outfitter",
+  "productName": "Outfitter",
   "version": "0.1.0",
   "identifier": "app.outfitter.desktop",
   "build": {
@@ -12,9 +12,11 @@
   "app": {
     "windows": [
       {
-        "title": "outfitter",
-        "width": 800,
-        "height": 600
+        "title": "Outfitter",
+        "width": 1200,
+        "height": 800,
+        "minWidth": 900,
+        "minHeight": 600
       }
     ],
     "security": {
