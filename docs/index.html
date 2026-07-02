@@ -141,8 +141,21 @@ const OS_DEFS = [
   { key: "linux", name: "Linux", test: /linux|x11|wayland/i,
     assets: [[/\.AppImage$/, "AppImage", "any distro"], [/amd64\.deb$/, ".deb", "Debian/Ubuntu"], [/x86_64\.rpm$/, ".rpm", "Fedora"]] },
 ];
+// Escape release fields before they touch innerHTML.
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+// Only ever link to GitHub's own release/API hosts.
+const safeUrl = (u) => {
+  try {
+    const url = new URL(u);
+    const ok = /(^|\.)github\.com$/.test(url.hostname) || /(^|\.)githubusercontent\.com$/.test(url.hostname);
+    return url.protocol === "https:" && ok ? url.href : "#";
+  } catch { return "#"; }
+};
 function visitorOS() {
   const ua = navigator.userAgent;
+  // Mobile visitors get no highlighted column — Outfitter is desktop-only.
+  if (/android|iphone|ipad|ipod|mobile/i.test(ua)) return null;
   for (const os of OS_DEFS) if (os.test.test(ua)) return os.key;
   return null;
 }
@@ -153,15 +166,15 @@ async function loadDownloads() {
     const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
     if (!res.ok) throw new Error(`GitHub answered ${res.status}`);
     const rel = await res.json();
-    const date = (rel.published_at || "").slice(0, 10);
-    meta.innerHTML = `Latest release <b>${rel.tag_name}</b> · ${date} · <a href="${rel.html_url}" style="border:none">release notes ↗</a>`;
+    const date = esc((rel.published_at || "").slice(0, 10));
+    meta.innerHTML = `Latest release <b>${esc(rel.tag_name)}</b> · ${date} · <a href="${safeUrl(rel.html_url)}" style="border:none">release notes ↗</a>`;
     const mine = visitorOS();
     grid.innerHTML = OS_DEFS.map((os) => {
       const links = os.assets.map(([re, label, sub]) => {
         const a = rel.assets.find((x) => re.test(x.name));
         if (!a) return "";
         const mb = (a.size / 1048576).toFixed(1);
-        return `<a href="${a.browser_download_url}">${label} ↓<span class="sub">${sub ? sub + " · " : ""}${mb} MB</span></a>`;
+        return `<a href="${safeUrl(a.browser_download_url)}">${label} ↓<span class="sub">${sub ? sub + " · " : ""}${mb} MB</span></a>`;
       }).join("");
       const yours = os.key === mine;
       return `<section class="${yours ? "yours" : ""}"><h3>${os.name}${yours ? '<span class="you">YOUR OS</span>' : ""}</h3>${links}</section>`;
@@ -182,9 +195,11 @@ const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)))
   .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
 async function startAuth(screenHint) {
-  const bytes = crypto.getRandomValues(new Uint8Array(48));
-  const verifier = b64url(bytes.buffer);
+  const verifier = b64url(crypto.getRandomValues(new Uint8Array(48)).buffer);
   sessionStorage.setItem("pkce_verifier", verifier);
+  // CSRF defense: a random state echoed back and verified on the callback.
+  const state = b64url(crypto.getRandomValues(new Uint8Array(16)).buffer);
+  sessionStorage.setItem("pkce_state", state);
   const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
   const p = new URLSearchParams({
     response_type: "code",
@@ -192,6 +207,7 @@ async function startAuth(screenHint) {
     redirect_uri: REDIRECT_URI,
     provider: "authkit",
     screen_hint: screenHint,
+    state,
     code_challenge: challenge,
     code_challenge_method: "S256",
   });
@@ -221,12 +237,22 @@ async function finishAuth(code) {
   }));
 }
 
+function readSession() {
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(SESSION_KEY); // corrupt value shouldn't brick the UI
+    return null;
+  }
+}
+
 function renderAccount() {
   const controls = document.getElementById("acct-controls");
-  const raw = localStorage.getItem(SESSION_KEY);
-  if (raw) {
-    const s = JSON.parse(raw);
-    controls.innerHTML = `<p class="signed">✓ signed in as ${s.email || s.userId}</p>
+  const s = readSession();
+  if (s) {
+    controls.innerHTML = `<p class="signed">✓ signed in as ${esc(s.email || s.userId || "your account")}</p>
       <p style="font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--mute)">
       Your account is ready — sign in with the same email inside the Outfitter app.</p>
       <button class="btn quiet" id="signout">Sign out</button>`;
@@ -246,11 +272,17 @@ function renderAccount() {
   const params = new URLSearchParams(location.search);
   const code = params.get("code");
   if (code) {
-    try {
-      await finishAuth(code);
-    } catch (e) {
-      const acct = document.getElementById("acct");
-      acct.insertAdjacentHTML("beforeend", `<p class="err">${e.message} — try again.</p>`);
+    const expected = sessionStorage.getItem("pkce_state");
+    sessionStorage.removeItem("pkce_state");
+    const acct = document.getElementById("acct");
+    if (!expected || params.get("state") !== expected) {
+      acct.insertAdjacentHTML("beforeend", `<p class="err">Sign-in could not be verified (state mismatch) — please try again.</p>`);
+    } else {
+      try {
+        await finishAuth(code);
+      } catch (e) {
+        acct.insertAdjacentHTML("beforeend", `<p class="err">${esc(e.message)} — try again.</p>`);
+      }
     }
     history.replaceState(null, "", location.pathname);
   }
