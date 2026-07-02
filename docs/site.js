@@ -79,16 +79,16 @@ function renderAccount() {
   if (!controls) return;
   const u = currentUser();
   if (u) {
-    controls.innerHTML = `<p class="signed">✓ signed in as ${esc(u.email || "your account")}</p>
+    controls.innerHTML = `<p class="signed">✓ logged in as ${esc(u.email || "your account")}</p>
       <p style="font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--mute)">
-      Your account is ready — sign in with the same email inside the Outfitter app.</p>
-      <button class="btn quiet" id="signout">Sign out</button>`;
+      Use the same email inside the Outfitter app.</p>
+      <button class="btn" id="signout">Log out</button>`;
     byId("signout").onclick = () =>
       authkit.signOut({ returnTo: new URL("account.html", REDIRECT_URI).href });
   } else if (authkit) {
-    controls.innerHTML = `<button class="btn" id="signup">Create account</button>
-      <button class="btn quiet" id="signin" style="margin-left:26px">Sign in</button>`;
-    byId("signup").onclick = () => authkit.signUp();
+    controls.innerHTML = `<button class="btn" id="signin">Log in</button>
+      <p style="font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--mute);margin-top:16px">
+      No account yet? Create one right on the login page.</p>`;
     byId("signin").onclick = () => authkit.signIn();
   } else {
     controls.innerHTML = `<p class="err">Sign-in is temporarily unavailable — please refresh in a minute.</p>`;
