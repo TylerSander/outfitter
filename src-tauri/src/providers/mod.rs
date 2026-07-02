@@ -139,36 +139,45 @@ pub(crate) fn configure_command(cmd: &mut Command) {
     }
 }
 
-/// Run argv to completion and return stdout. Used for probes and inventory
-/// listing; long-running install/uninstall work goes through `ops` instead.
-pub(crate) fn run_capture(argv: &[&str]) -> Result<String, String> {
+/// Run argv to completion, returning the full `Output`. `Err` only when the
+/// process could not be spawned; callers that need exit-code semantics
+/// (winget's HRESULT "empty result" codes) interpret the status themselves.
+pub(crate) fn run_capture_output(argv: &[&str]) -> Result<std::process::Output, String> {
     let (program, args) = argv
         .split_first()
         .ok_or_else(|| "empty command".to_string())?;
     let mut cmd = Command::new(program);
     cmd.args(args).stdin(Stdio::null());
     configure_command(&mut cmd);
-    let output = cmd
-        .output()
-        .map_err(|e| format!("failed to run {program}: {e}"))?;
+    cmd.output()
+        .map_err(|e| format!("failed to run {program}: {e}"))
+}
+
+/// Run argv to completion and return stdout. Used for probes and inventory
+/// listing; long-running install/uninstall work goes through `ops` instead.
+pub(crate) fn run_capture(argv: &[&str]) -> Result<String, String> {
+    let program = argv.first().copied().unwrap_or("");
+    let output = run_capture_output(argv)?;
     if output.status.success() {
-        Ok(String::from_utf8_lossy(&output.stdout).into_owned())
-    } else {
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        let last_line = stderr
-            .lines()
-            .rev()
-            .find(|l| !l.trim().is_empty())
-            .unwrap_or("")
-            .trim()
-            .to_string();
-        let mut msg = format!("{program} exited with {}", output.status);
-        if !last_line.is_empty() {
-            msg.push_str(": ");
-            msg.push_str(&last_line);
-        }
-        Err(msg)
+        return Ok(String::from_utf8_lossy(&output.stdout).into_owned());
     }
+    // Prefer stderr for the detail line, but fall back to stdout: winget
+    // writes error text to stdout and leaves stderr empty even on failure.
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let last_line = [&stderr, &stdout]
+        .iter()
+        .flat_map(|s| s.lines().rev())
+        .find(|l| !l.trim().is_empty())
+        .unwrap_or("")
+        .trim()
+        .to_string();
+    let mut msg = format!("{program} exited with {}", output.status);
+    if !last_line.is_empty() {
+        msg.push_str(": ");
+        msg.push_str(&last_line);
+    }
+    Err(msg)
 }
 
 /// Spawn argv fully detached, for launching installed apps. A reaper thread
