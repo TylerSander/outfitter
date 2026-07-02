@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outfitter — fits out your machine</title>
+<meta name="description" content="Outfitter is a curated app store that installs software through your operating system's own trusted package manager — winget, Homebrew, Flatpak. It never hosts installers.">
+<style>
+/* ============================================================
+   OUTFITTER SITE — Observatory theme (shared with the app and
+   the DevSystems dashboard): warm amber on near-black ink,
+   hairlines, condensed caps + italic serif, grain. No neon.
+   ============================================================ */
+:root{
+  --ink:#0b0a10; --ink2:#14121a;
+  --paper:#ece6d9; --paper-hi:#f7f2e7; --mute:#8f8899;
+  --amber:#e8b04b; --amber-hi:#ffd98a; --mint:#9fe870; --coral:#ff8577;
+  --hair:rgba(236,230,217,.11); --hair-amber:rgba(232,176,75,.35);
+  --disp:'Bahnschrift','Avenir Next Condensed','Arial Narrow',Arial,sans-serif;
+  --serif:Georgia,'Times New Roman',serif;
+  --mono:Consolas,'SF Mono',Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--paper);font-family:var(--disp);-webkit-font-smoothing:antialiased}
+a{color:var(--amber);text-decoration:none;border-bottom:1px solid var(--hair-amber);padding-bottom:1px;transition:color .2s,border-color .2s}
+a:hover{color:var(--amber-hi);border-bottom-color:var(--amber-hi)}
+.vignette{position:fixed;inset:0;z-index:-2;pointer-events:none;background:radial-gradient(ellipse 120% 90% at 50% 20%,transparent 40%,rgba(0,0,0,.55) 100%)}
+.grain{position:fixed;inset:-10%;z-index:60;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain .9s steps(1) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-2%,3%)}40%{transform:translate(3%,-2%)}60%{transform:translate(-3%,-2%)}80%{transform:translate(2%,2%)}}
+.wrap{max-width:960px;margin:0 auto;padding:40px 28px 60px}
+header{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.wordmark{font-size:13px;font-weight:700;letter-spacing:6px;color:var(--paper-hi);text-transform:uppercase}
+.wordmark em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:.5px;color:var(--amber);text-transform:none;font-size:13px;margin-left:10px}
+.hud{font-family:var(--mono);font-size:10.5px;letter-spacing:2px;color:var(--mute);text-transform:uppercase}
+.divider{height:1px;background:var(--hair);margin:24px 0 0;position:relative;overflow:hidden}
+.divider::after{content:'';position:absolute;top:-1px;width:60px;height:3px;background:linear-gradient(90deg,transparent,var(--amber),transparent);animation:travel 12s ease-in-out infinite}
+@keyframes travel{0%,100%{left:-60px}50%{left:100%}}
+.hero{padding:76px 0 60px}
+.hero h1{font-size:clamp(44px,8vw,84px);font-weight:700;letter-spacing:4px;line-height:1;margin:0;color:var(--paper-hi);text-transform:uppercase}
+.hero p.tag{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--mute);max-width:620px;line-height:1.7;margin:20px 0 0}
+.hero p.tag .amp{color:var(--amber)}
+.cta-row{display:flex;gap:34px;margin-top:34px;flex-wrap:wrap}
+.btn{display:inline-block;background:none;border:none;border-bottom:1px solid var(--hair-amber);color:var(--amber);
+  font-family:var(--disp);font-size:12px;letter-spacing:4px;text-transform:uppercase;padding:6px 2px;cursor:pointer;
+  transition:color .2s,border-color .2s,letter-spacing .25s}
+.btn:hover{color:var(--amber-hi);border-bottom-color:var(--amber-hi);letter-spacing:5px}
+.btn.quiet{color:var(--mute);border-bottom-color:var(--hair)}
+.btn.quiet:hover{color:var(--paper);border-bottom-color:var(--hair)}
+.index-label{display:flex;align-items:center;gap:14px;font-size:10.5px;letter-spacing:5px;text-transform:uppercase;color:var(--mute);margin:64px 0 22px}
+.index-label::after{content:'';flex:1;height:1px;background:var(--hair)}
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair)}
+.about div{background:var(--ink);padding:24px 22px}
+.about h3{margin:0;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--paper-hi)}
+.about p{font-family:var(--serif);font-style:italic;font-size:13.5px;line-height:1.7;color:var(--mute);margin:12px 0 0}
+.dl-meta{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--mute);margin-bottom:18px}
+.dl-meta b{color:var(--amber);font-weight:400}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair)}
+.dl section{background:var(--ink);padding:22px}
+.dl section.yours{background:var(--ink2)}
+.dl h3{margin:0 0 4px;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--paper-hi);display:flex;align-items:center;gap:10px}
+.dl h3 .you{font-size:8.5px;letter-spacing:2px;color:var(--mint);border:1px solid rgba(159,232,112,.3);padding:2px 6px}
+.dl p{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--mute);margin:6px 0 14px;line-height:1.6}
+.dl a{display:block;margin:8px 0;font-size:12px;letter-spacing:1.5px}
+.dl .sub{font-family:var(--mono);font-size:10px;color:var(--mute);letter-spacing:1px;margin-left:8px;border:none}
+.acct{border:1px solid var(--hair);padding:26px 24px}
+.acct p{font-family:var(--serif);font-style:italic;font-size:14px;line-height:1.7;color:var(--mute);margin:0 0 20px;max-width:640px}
+.acct .signed{font-family:var(--mono);font-size:12px;letter-spacing:1px;color:var(--mint)}
+.fb{display:flex;gap:34px;flex-wrap:wrap}
+.err{color:var(--coral);font-family:var(--serif);font-style:italic;font-size:13px}
+footer{margin-top:80px;padding-top:16px;border-top:1px solid var(--hair);color:var(--mute);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;line-height:2}
+.pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--mint);animation:pulse 2.4s ease-in-out infinite;margin-right:8px}
+@keyframes pulse{50%{opacity:.25}}
+</style>
+</head>
+<body>
+<div class="vignette"></div><div class="grain"></div>
+<div class="wrap">
+  <header>
+    <div class="wordmark">Outfitter <em>fits out your machine</em></div>
+    <div class="hud"><a href="https://github.com/TylerSander/outfitter" style="border:none;color:inherit">GitHub ↗</a></div>
+  </header>
+  <div class="divider"></div>
+
+  <section class="hero">
+    <h1>Every app.<br>One click.<br>Zero sketchy<br>downloads.</h1>
+    <p class="tag">Outfitter is a curated app store for your new (or newly reformatted) computer.
+    It installs everything through your operating system's <span class="amp">own trusted package manager</span> —
+    winget on Windows, Homebrew on Mac, Flatpak on Linux — so nothing ever comes from a
+    mystery download site. Outfitter never hosts installers; it just knows where the real ones live.</p>
+    <div class="cta-row">
+      <a class="btn" href="#downloads">Download</a>
+      <a class="btn quiet" href="#account">Create account</a>
+    </div>
+  </section>
+
+  <h2 class="index-label" id="about">What it does</h2>
+  <div class="about">
+    <div><h3>Curated, not crowded</h3><p>A hand-picked shelf of the apps people actually want — browsers, chat, games, dev tools, AI tools — with real descriptions and real logos. No ads, no bundleware, no ★★★★★ lookalikes.</p></div>
+    <div><h3>Provenance on every tile</h3><p>Every app shows exactly where it comes from — "via winget · VideoLAN.VLC" — and community-maintained packages are labeled as such. You always know what you're installing.</p></div>
+    <div><h3>Updates itself</h3><p>Outfitter checks its own releases and updates in place with one click, verified with cryptographic signatures before anything runs.</p></div>
+    <div><h3>Your list, everywhere</h3><p>Sign in to save links and apps you want on your next machine. Set up a new computer by opening Outfitter and pressing install.</p></div>
+  </div>
+
+  <h2 class="index-label" id="downloads">Downloads</h2>
+  <p class="dl-meta" id="dl-meta">Reading the latest release from GitHub…</p>
+  <div class="dl" id="dl-grid"></div>
+
+  <h2 class="index-label" id="account">Account</h2>
+  <div class="acct" id="acct">
+    <p>An account saves your links and app wishlist so they follow you to every machine.
+    Sign-in is handled by WorkOS — Outfitter never sees your password.</p>
+    <div id="acct-controls"><button class="btn" id="signup">Create account</button>
+    <button class="btn quiet" id="signin" style="margin-left:26px">Sign in</button></div>
+  </div>
+
+  <h2 class="index-label" id="feedback">Feedback</h2>
+  <div class="fb">
+    <a class="btn" href="https://github.com/TylerSander/outfitter/issues/new?template=bug_report.yml">Report a bug</a>
+    <a class="btn" href="https://github.com/TylerSander/outfitter/issues/new?template=feature_request.yml">Request a feature</a>
+    <a class="btn quiet" href="https://github.com/TylerSander/outfitter/issues/new?template=question.yml">Ask a question</a>
+  </div>
+  <p style="font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--mute)">
+    You can also send feedback from inside the app — sidebar → Feedback. Bug reports from the app attach diagnostics automatically.</p>
+
+  <footer>
+    <span class="pulse"></span>Open source · <a href="https://github.com/TylerSander/outfitter" style="border:none;color:inherit">github.com/TylerSander/outfitter</a><br>
+    App logos are the trademarks of their respective owners, shown to identify the software they belong to.
+  </footer>
+</div>
+
+<script>
+/* ---------- downloads: always current, straight from GitHub Releases ---------- */
+const REPO = "TylerSander/outfitter";
+const OS_DEFS = [
+  { key: "windows", name: "Windows", test: /windows/i,
+    assets: [[/x64-setup\.exe$/, "Installer", "recommended"], [/x64_en-US\.msi$/, "MSI", "managed installs"]] },
+  { key: "mac", name: "macOS", test: /mac/i,
+    assets: [[/aarch64\.dmg$/, "Apple Silicon", "M1–M4"], [/x64\.dmg$/, "Intel", ""]] },
+  { key: "linux", name: "Linux", test: /linux|x11|wayland/i,
+    assets: [[/\.AppImage$/, "AppImage", "any distro"], [/amd64\.deb$/, ".deb", "Debian/Ubuntu"], [/x86_64\.rpm$/, ".rpm", "Fedora"]] },
+];
+function visitorOS() {
+  const ua = navigator.userAgent;
+  for (const os of OS_DEFS) if (os.test.test(ua)) return os.key;
+  return null;
+}
+async function loadDownloads() {
+  const meta = document.getElementById("dl-meta");
+  const grid = document.getElementById("dl-grid");
+  try {
+    const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
+    if (!res.ok) throw new Error(`GitHub answered ${res.status}`);
+    const rel = await res.json();
+    const date = (rel.published_at || "").slice(0, 10);
+    meta.innerHTML = `Latest release <b>${rel.tag_name}</b> · ${date} · <a href="${rel.html_url}" style="border:none">release notes ↗</a>`;
+    const mine = visitorOS();
+    grid.innerHTML = OS_DEFS.map((os) => {
+      const links = os.assets.map(([re, label, sub]) => {
+        const a = rel.assets.find((x) => re.test(x.name));
+        if (!a) return "";
+        const mb = (a.size / 1048576).toFixed(1);
+        return `<a href="${a.browser_download_url}">${label} ↓<span class="sub">${sub ? sub + " · " : ""}${mb} MB</span></a>`;
+      }).join("");
+      const yours = os.key === mine;
+      return `<section class="${yours ? "yours" : ""}"><h3>${os.name}${yours ? '<span class="you">YOUR OS</span>' : ""}</h3>${links}</section>`;
+    }).join("");
+  } catch (e) {
+    meta.innerHTML = `<span class="err">Couldn't reach GitHub for the latest release — grab it from the <a href="https://github.com/${REPO}/releases/latest">releases page ↗</a>.</span>`;
+  }
+}
+loadDownloads();
+
+/* ---------- account: WorkOS AuthKit, PKCE public client ---------- */
+const WORKOS_CLIENT_ID = "client_01KWGH1817P2XJQY5D2ANQZCJ7";
+const AUTH_BASE = "https://api.workos.com/user_management";
+const REDIRECT_URI = "https://tylersander.github.io/outfitter/";
+const SESSION_KEY = "outfitter.session";
+
+const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)))
+  .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+
+async function startAuth(screenHint) {
+  const bytes = crypto.getRandomValues(new Uint8Array(48));
+  const verifier = b64url(bytes.buffer);
+  sessionStorage.setItem("pkce_verifier", verifier);
+  const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
+  const p = new URLSearchParams({
+    response_type: "code",
+    client_id: WORKOS_CLIENT_ID,
+    redirect_uri: REDIRECT_URI,
+    provider: "authkit",
+    screen_hint: screenHint,
+    code_challenge: challenge,
+    code_challenge_method: "S256",
+  });
+  location.assign(`${AUTH_BASE}/authorize?${p}`);
+}
+
+async function finishAuth(code) {
+  const verifier = sessionStorage.getItem("pkce_verifier");
+  if (!verifier) return;
+  sessionStorage.removeItem("pkce_verifier");
+  const res = await fetch(`${AUTH_BASE}/authenticate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      grant_type: "authorization_code",
+      client_id: WORKOS_CLIENT_ID,
+      code,
+      code_verifier: verifier,
+    }),
+  });
+  if (!res.ok) throw new Error(`sign-in exchange failed (${res.status})`);
+  const data = await res.json();
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    email: data.user && data.user.email,
+    userId: data.user && data.user.id,
+    at: Date.now(),
+  }));
+}
+
+function renderAccount() {
+  const controls = document.getElementById("acct-controls");
+  const raw = localStorage.getItem(SESSION_KEY);
+  if (raw) {
+    const s = JSON.parse(raw);
+    controls.innerHTML = `<p class="signed">✓ signed in as ${s.email || s.userId}</p>
+      <p style="font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--mute)">
+      Your account is ready — sign in with the same email inside the Outfitter app.</p>
+      <button class="btn quiet" id="signout">Sign out</button>`;
+    document.getElementById("signout").onclick = () => {
+      localStorage.removeItem(SESSION_KEY);
+      renderAccount();
+    };
+  } else {
+    controls.innerHTML = `<button class="btn" id="signup">Create account</button>
+      <button class="btn quiet" id="signin" style="margin-left:26px">Sign in</button>`;
+    document.getElementById("signup").onclick = () => startAuth("sign-up");
+    document.getElementById("signin").onclick = () => startAuth("sign-in");
+  }
+}
+
+(async () => {
+  const params = new URLSearchParams(location.search);
+  const code = params.get("code");
+  if (code) {
+    try {
+      await finishAuth(code);
+    } catch (e) {
+      const acct = document.getElementById("acct");
+      acct.insertAdjacentHTML("beforeend", `<p class="err">${e.message} — try again.</p>`);
+    }
+    history.replaceState(null, "", location.pathname);
+  }
+  renderAccount();
+})();
+</script>
+</body>
+</html>
