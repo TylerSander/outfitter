@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Outfitter — fits out your machine</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="description" content="Outfitter is a curated app store that installs software through your operating system's own trusted package manager — winget, Homebrew, Flatpak. It never hosts installers.">
 <style>
 /* ============================================================
@@ -188,7 +189,7 @@ loadDownloads();
 /* ---------- account: WorkOS AuthKit, PKCE public client ---------- */
 const WORKOS_CLIENT_ID = "client_01KWGH1817P2XJQY5D2ANQZCJ7";
 const AUTH_BASE = "https://api.workos.com/user_management";
-const REDIRECT_URI = "https://tylersander.github.io/outfitter/";
+const REDIRECT_URI = new URL(".", location.href).href; // current origin+dir; registered in WorkOS
 const SESSION_KEY = "outfitter.session";
 
 const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)))

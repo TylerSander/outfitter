@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <rect width="1024" height="1024" rx="224" fill="#0b0a10"/>
+  <g fill="none" stroke="#e8b04b" stroke-linecap="round">
+    <!-- faint outer halo ring -->
+    <circle cx="512" cy="512" r="372" stroke-width="10" opacity="0.32"/>
+    <!-- main reticle ring -->
+    <circle cx="512" cy="512" r="300" stroke-width="30"/>
+    <!-- cardinal ticks -->
+    <path stroke-width="30" d="M512 140 V212 M512 812 V884 M140 512 H212 M812 512 H884"/>
+  </g>
+  <circle cx="512" cy="512" r="46" fill="#e8b04b"/>
+</svg>
