@@ -242,11 +242,20 @@ enum ElevatedError {
 /// Re-run argv elevated via PowerShell Start-Process -Verb RunAs. The
 /// elevated child cannot stream into this unelevated process; only the exit
 /// code comes back. A declined UAC prompt maps to ERROR_CANCELLED (1223).
+///
+/// PowerShell is invoked by its absolute System32 path (never bare
+/// `powershell`, which would resolve through PATH/CWD and then run elevated —
+/// a privilege-escalation vector). winget is resolved inside the elevated
+/// session via Get-Command so the launcher itself is not taken from the
+/// unelevated caller's working directory.
 #[cfg(windows)]
 fn run_elevated(argv: &[String]) -> Result<(), ElevatedError> {
     let script =
         elevated_script(argv).ok_or_else(|| ElevatedError::Failed("empty command".into()))?;
-    let mut cmd = Command::new("powershell");
+    let system_root = std::env::var("SystemRoot").unwrap_or_else(|_| "C:\\Windows".to_string());
+    let powershell =
+        format!("{system_root}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe");
+    let mut cmd = Command::new(powershell);
     cmd.args(["-NoProfile", "-NonInteractive", "-Command", &script])
         .stdin(Stdio::null())
         .stdout(Stdio::null())
@@ -266,9 +275,11 @@ fn run_elevated(argv: &[String]) -> Result<(), ElevatedError> {
     }
 }
 
-/// PowerShell one-liner: run argv elevated, hidden, and propagate the child's
-/// exit code; a thrown Start-Process (user declined the prompt) maps to 1223.
-/// Single-quoted PowerShell strings escape quotes by doubling them.
+/// PowerShell one-liner: resolve the program to an absolute path via
+/// Get-Command (falling back to the literal name), then run it elevated,
+/// hidden, and propagate the child's exit code; a thrown Start-Process (user
+/// declined the prompt) maps to 1223. Single-quoted PowerShell strings escape
+/// quotes by doubling them.
 #[cfg_attr(not(windows), allow(dead_code))]
 fn elevated_script(argv: &[String]) -> Option<String> {
     let (program, args) = argv.split_first()?;
@@ -280,9 +291,9 @@ fn elevated_script(argv: &[String]) -> Option<String> {
         format!(" -ArgumentList @({arg_list})")
     };
     Some(format!(
-        "try {{ $p = Start-Process -FilePath {}{} -Verb RunAs -Wait -PassThru -WindowStyle Hidden; exit $p.ExitCode }} catch {{ exit 1223 }}",
-        quote(program),
-        arg_clause,
+        "$exe = (Get-Command {prog} -ErrorAction SilentlyContinue).Source; if (-not $exe) {{ $exe = {prog} }}; try {{ $p = Start-Process -FilePath $exe{args} -Verb RunAs -Wait -PassThru -WindowStyle Hidden; exit $p.ExitCode }} catch {{ exit 1223 }}",
+        prog = quote(program),
+        args = arg_clause,
     ))
 }
 
@@ -482,7 +493,10 @@ mod tests {
             "VideoLAN.VLC".to_string(),
         ];
         let script = elevated_script(&argv).expect("script");
-        assert!(script.contains("Start-Process -FilePath 'winget'"));
+        // winget is resolved via Get-Command, not taken from the caller's PATH.
+        assert!(script.contains("Get-Command 'winget'"));
+        assert!(script.contains("Start-Process -FilePath $exe"));
+        assert!(!script.contains("-FilePath 'winget'"));
         assert!(script.contains("-ArgumentList @('uninstall','--id','VideoLAN.VLC')"));
         assert!(script.contains("-Verb RunAs -Wait -PassThru"));
         assert!(script.contains("exit $p.ExitCode"));

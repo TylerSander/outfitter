@@ -57,6 +57,27 @@ function installedKey(source: Source): string {
   return `${source.manager}:${source.id}`;
 }
 
+/** Installed version matching this source, or null. winget publishes
+ *  installer/arch/channel variants under suffixed ids (Google.Chrome.EXE,
+ *  Mozilla.Firefox.MSIX), so exact id equality reports a variant-installed
+ *  app as "not installed". Match the exact id first, then any winget id in
+ *  the same family (`<id>.<suffix>`) — the trailing dot keeps Google.Chrome
+ *  from matching an unrelated Google.ChromeRemoteDesktop. */
+export function matchInstalled(
+  source: Source,
+  installed: Map<string, string>,
+): string | null {
+  const exact = installed.get(installedKey(source));
+  if (exact !== undefined) return exact;
+  if (source.manager === "winget") {
+    const prefix = `winget:${source.id}.`;
+    for (const [k, version] of installed) {
+      if (k.startsWith(prefix)) return version;
+    }
+  }
+  return null;
+}
+
 /** First source listed for the current platform wins; null = not available. */
 export function primarySource(app: CatalogApp, platform: Platform): Source | null {
   return app.sources[platform][0] ?? null;
@@ -76,7 +97,7 @@ export function deriveInstallState(
     if (op.phase === "queued") return "queued";
     return op.kind === "install" ? "installing" : "uninstalling";
   }
-  return installed.has(installedKey(source)) ? "installed" : "not_installed";
+  return matchInstalled(source, installed) !== null ? "installed" : "not_installed";
 }
 
 export function installedVersion(
@@ -86,7 +107,7 @@ export function installedVersion(
 ): string | null {
   const source = primarySource(app, platform);
   if (source === null) return null;
-  return installed.get(installedKey(source)) ?? null;
+  return matchInstalled(source, installed);
 }
 
 /** Catalog apps whose primary source on this platform is currently installed. */
@@ -97,7 +118,7 @@ export function installedCatalogApps(
 ): CatalogApp[] {
   return catalog.apps.filter((app) => {
     const source = primarySource(app, platform);
-    return source !== null && installed.has(installedKey(source));
+    return source !== null && matchInstalled(source, installed) !== null;
   });
 }
 
