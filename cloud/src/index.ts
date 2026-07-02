@@ -57,6 +57,15 @@ const FEEDBACK_LABEL: Record<string, string> = {
 };
 const FEEDBACK_REPO = "TylerSander/outfitter";
 
+/** Neutralize GitHub-flavored markdown that would notify/act on submit:
+ *  a zero-width space after "@" defuses @mention pings, and after "#" before
+ *  a digit defuses issue/PR autolinks and closing keywords (closes #12).
+ *  Preserves readability — the text still reads the same. */
+function neutralizeGithub(text: string): string {
+  const zwsp = String.fromCharCode(0x200b);
+  return text.replace(/@(?=\w)/g, `@${zwsp}`).replace(/#(?=\d)/g, `#${zwsp}`);
+}
+
 app.post("/feedback", async (c) => {
   if (!c.env.GITHUB_FEEDBACK_TOKEN) {
     return c.json({ error: "feedback relay not configured" }, 501);
@@ -76,9 +85,14 @@ app.post("/feedback", async (c) => {
   if (typeof body.website === "string" && body.website !== "") {
     return c.body(null, 204); // pretend success to bots
   }
-  const type = typeof body.type === "string" && body.type in FEEDBACK_LABEL ? body.type : null;
-  const title = typeof body.title === "string" ? body.title.trim().slice(0, 120) : "";
-  const detail = typeof body.body === "string" ? body.body.trim().slice(0, 8000) : "";
+  // Object.hasOwn, not `in`: `in` walks the prototype chain, so "toString",
+  // "constructor", etc. would pass as valid types.
+  const type =
+    typeof body.type === "string" && Object.hasOwn(FEEDBACK_LABEL, body.type)
+      ? body.type
+      : null;
+  const title = typeof body.title === "string" ? neutralizeGithub(body.title.trim()).slice(0, 120) : "";
+  const detail = typeof body.body === "string" ? neutralizeGithub(body.body.trim()).slice(0, 8000) : "";
   if (type === null || title === "" || detail === "") {
     return c.json({ error: "type (bug|feature|question), title, and body are required" }, 400);
   }
@@ -262,21 +276,29 @@ app.post("/v1/links", async (c) => {
   const parsed = validateLink(body);
   if ("error" in parsed) return c.json({ error: parsed.error }, 400);
 
-  const count = await c.env.DB.prepare(
-    "SELECT COUNT(*) AS n FROM links WHERE user_sub = ?",
+  // Atomic cap: the INSERT itself only fires while the user is under the
+  // limit, so two concurrent POSTs can't both slip past a separate count.
+  const id = crypto.randomUUID();
+  const result = await c.env.DB.prepare(
+    "INSERT INTO links (id, user_sub, kind, url, title, note, app_id) " +
+      "SELECT ?, ?, ?, ?, ?, ?, ? " +
+      "WHERE (SELECT COUNT(*) FROM links WHERE user_sub = ?) < ?",
   )
-    .bind(sub)
-    .first<{ n: number }>();
-  if ((count?.n ?? 0) >= LIMITS.linksPerUser) {
+    .bind(
+      id,
+      sub,
+      parsed.kind,
+      parsed.url,
+      parsed.title,
+      parsed.note,
+      parsed.appId,
+      sub,
+      LIMITS.linksPerUser,
+    )
+    .run();
+  if (result.meta.changes === 0) {
     return c.json({ error: `limit of ${LIMITS.linksPerUser} saved items reached` }, 409);
   }
-
-  const id = crypto.randomUUID();
-  await c.env.DB.prepare(
-    "INSERT INTO links (id, user_sub, kind, url, title, note, app_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-  )
-    .bind(id, sub, parsed.kind, parsed.url, parsed.title, parsed.note, parsed.appId)
-    .run();
   await logEvent(c.env.DB, sub, "link.created", { id, kind: parsed.kind, title: parsed.title });
   return c.json({ id }, 201);
 });
