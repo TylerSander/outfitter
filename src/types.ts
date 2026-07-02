@@ -89,3 +89,41 @@ export const OS_LABEL: Record<Platform, string> = {
   macos: "macOS",
   linux: "Linux",
 };
+
+// ---- accounts / profile ----------------------------------------------------
+
+export const WEBSITE_URL = "https://tylersander.github.io/outfitter/";
+
+export interface UserProfile {
+  id: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  profilePictureUrl: string | null;
+}
+
+export interface Session {
+  user: UserProfile;
+  accessToken: string;
+}
+
+export interface SavedApp {
+  id: string;
+  name: string;
+  url: string | null;
+  note: string | null;
+  createdAt: string;
+}
+
+/** New-saved-app input from the UI (before the backend assigns id/createdAt). */
+export interface NewSavedApp {
+  name: string;
+  url?: string;
+  note?: string;
+}
+
+/** On-device per-user profile data (display-name override + saved apps). */
+export interface Profile {
+  displayName: string | null;
+  apps: SavedApp[];
+}

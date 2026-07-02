@@ -11,6 +11,7 @@ import type {
   OpEvent,
   OpKind,
   Platform,
+  SavedApp,
   Source,
 } from "./types";
 import type { IpcBackend } from "./ipc";
@@ -130,4 +131,41 @@ export const mockBackend: IpcBackend = {
     return Promise.resolve();
   },
   getAppVersion: () => Promise.resolve("dev (browser mock)"),
+  login: () =>
+    Promise.resolve({
+      user: {
+        id: "user_mock",
+        email: "you@example.com",
+        firstName: "Preview",
+        lastName: "User",
+        profilePictureUrl: null,
+      },
+      accessToken: "mock-access-token",
+    }),
+  restoreSession: () => Promise.resolve(null),
+  logout: () => Promise.resolve(),
+  getProfile: () => Promise.resolve({ displayName: mockProfile.displayName, apps: [...mockProfile.apps] }),
+  setDisplayName: (_sub, name) => {
+    mockProfile.displayName = name;
+    return Promise.resolve({ displayName: name, apps: [...mockProfile.apps] });
+  },
+  addSavedApp: (_sub, entry, now) => {
+    mockProfile.apps.push({
+      id: String(mockProfile.apps.length + 1),
+      name: entry.name,
+      url: entry.url ?? null,
+      note: entry.note ?? null,
+      createdAt: now,
+    });
+    return Promise.resolve({ displayName: mockProfile.displayName, apps: [...mockProfile.apps] });
+  },
+  removeSavedApp: (_sub, id) => {
+    mockProfile.apps = mockProfile.apps.filter((a) => a.id !== id);
+    return Promise.resolve({ displayName: mockProfile.displayName, apps: [...mockProfile.apps] });
+  },
+};
+
+const mockProfile: { displayName: string | null; apps: SavedApp[] } = {
+  displayName: null,
+  apps: [],
 };

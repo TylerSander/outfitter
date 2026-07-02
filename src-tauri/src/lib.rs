@@ -1,5 +1,7 @@
+pub mod auth;
 pub mod catalog;
 pub mod ops;
+pub mod profile;
 pub mod providers;
 
 use tauri::{AppHandle, State};
@@ -90,6 +92,58 @@ fn enqueue(
     )
 }
 
+// ---- accounts (WorkOS AuthKit) ---------------------------------------------
+
+#[tauri::command]
+async fn login(app: AppHandle) -> Result<auth::Session, String> {
+    tauri::async_runtime::spawn_blocking(move || auth::login_blocking(&app))
+        .await
+        .map_err(|e| format!("sign-in task failed: {e}"))?
+}
+
+#[tauri::command]
+async fn restore_session() -> Result<Option<auth::Session>, String> {
+    tauri::async_runtime::spawn_blocking(auth::restore_blocking)
+        .await
+        .map_err(|e| format!("session task failed: {e}"))?
+}
+
+#[tauri::command]
+fn logout() {
+    auth::logout();
+}
+
+// ---- profile (on-device per-user saved apps) -------------------------------
+
+#[tauri::command]
+fn get_profile(app: AppHandle, sub: String) -> Result<profile::Profile, String> {
+    profile::get(&app, &sub)
+}
+
+#[tauri::command]
+fn set_display_name(
+    app: AppHandle,
+    sub: String,
+    name: Option<String>,
+) -> Result<profile::Profile, String> {
+    profile::set_display_name(&app, &sub, name)
+}
+
+#[tauri::command]
+fn add_saved_app(
+    app: AppHandle,
+    sub: String,
+    entry: profile::NewSavedApp,
+    now: String,
+) -> Result<profile::Profile, String> {
+    profile::add_app(&app, &sub, entry, &now)
+}
+
+#[tauri::command]
+fn remove_saved_app(app: AppHandle, sub: String, id: String) -> Result<profile::Profile, String> {
+    profile::remove_app(&app, &sub, &id)
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -103,7 +157,14 @@ pub fn run() {
             get_manager_status,
             detect_installed,
             install_app,
-            uninstall_app
+            uninstall_app,
+            login,
+            restore_session,
+            logout,
+            get_profile,
+            set_display_name,
+            add_saved_app,
+            remove_saved_app
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

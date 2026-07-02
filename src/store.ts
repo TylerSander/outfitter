@@ -10,6 +10,9 @@ import type {
   OpKind,
   OpPhase,
   Platform,
+  Profile,
+  NewSavedApp,
+  Session,
   Source,
 } from "./types";
 
@@ -41,8 +44,23 @@ interface OutfitterStore {
   activeView: View;
   ready: boolean;
   initError: string | null;
+  // accounts
+  session: Session | null;
+  authBusy: boolean;
+  authError: string | null;
+  welcomeOpen: boolean;
+  profile: Profile | null;
+  profileBusy: boolean;
+  profileError: string | null;
   // actions
   init(): Promise<void>;
+  login(): Promise<void>;
+  logout(): Promise<void>;
+  closeWelcome(): void;
+  loadProfile(): Promise<void>;
+  setDisplayName(name: string | null): Promise<void>;
+  addSavedApp(entry: NewSavedApp): Promise<void>;
+  removeSavedApp(id: string): Promise<void>;
   install(app: CatalogApp): Promise<void>;
   uninstall(app: CatalogApp): Promise<void>;
   clearOp(appId: string): void;
@@ -224,6 +242,13 @@ export const useStore = create<OutfitterStore>()((set, get) => {
     activeView: "discover",
     ready: false,
     initError: null,
+    session: null,
+    authBusy: false,
+    authError: null,
+    welcomeOpen: false,
+    profile: null,
+    profileBusy: false,
+    profileError: null,
 
     init: async () => {
       if (initStarted) return;
@@ -247,6 +272,116 @@ export const useStore = create<OutfitterStore>()((set, get) => {
         set({
           initError: err instanceof Error ? err.message : String(err),
           ready: true,
+        });
+      }
+      // Silently restore a prior sign-in; if none and the welcome has never
+      // been shown, open it (first-run login/create-account gate).
+      try {
+        const session = await ipc.restoreSession();
+        if (session !== null) {
+          set({ session });
+          void get().loadProfile();
+        } else if (localStorage.getItem("outfitter.welcomed") === null) {
+          set({ welcomeOpen: true });
+        }
+      } catch {
+        // offline / no keychain — stay signed out, no gate
+      }
+    },
+
+    login: async () => {
+      set({ authBusy: true, authError: null });
+      try {
+        const session = await ipc.login();
+        localStorage.setItem("outfitter.welcomed", "1");
+        set({ session, welcomeOpen: false, authBusy: false });
+        void get().loadProfile();
+      } catch (err) {
+        set({
+          authBusy: false,
+          authError: err instanceof Error ? err.message : String(err),
+        });
+      }
+    },
+
+    logout: async () => {
+      try {
+        await ipc.logout();
+      } catch {
+        // best-effort; clear local state regardless
+      }
+      set((s) => ({
+        session: null,
+        profile: null,
+        activeView: s.activeView === "profile" ? "discover" : s.activeView,
+      }));
+    },
+
+    closeWelcome: () => {
+      localStorage.setItem("outfitter.welcomed", "1");
+      set({ welcomeOpen: false });
+    },
+
+    loadProfile: async () => {
+      const session = get().session;
+      if (session === null) return;
+      set({ profileBusy: true, profileError: null });
+      try {
+        const profile = await ipc.getProfile(session.user.id);
+        set({ profile, profileBusy: false });
+      } catch (err) {
+        set({
+          profileBusy: false,
+          profileError: err instanceof Error ? err.message : String(err),
+        });
+      }
+    },
+
+    setDisplayName: async (name) => {
+      const session = get().session;
+      if (session === null) return;
+      set({ profileBusy: true, profileError: null });
+      try {
+        const profile = await ipc.setDisplayName(session.user.id, name);
+        set({ profile, profileBusy: false });
+      } catch (err) {
+        set({
+          profileBusy: false,
+          profileError: err instanceof Error ? err.message : String(err),
+        });
+      }
+    },
+
+    addSavedApp: async (entry) => {
+      const session = get().session;
+      if (session === null) return;
+      set({ profileBusy: true, profileError: null });
+      try {
+        const profile = await ipc.addSavedApp(
+          session.user.id,
+          entry,
+          new Date().toISOString(),
+        );
+        set({ profile, profileBusy: false });
+      } catch (err) {
+        set({
+          profileBusy: false,
+          profileError: err instanceof Error ? err.message : String(err),
+        });
+      }
+    },
+
+    removeSavedApp: async (id) => {
+      const session = get().session;
+      if (session === null) return;
+      set({ profileBusy: true, profileError: null });
+      try {
+        const profile = await ipc.removeSavedApp(session.user.id, id);
+        set({ profile, profileBusy: false });
+      } catch (err) {
+        set({
+          profileBusy: false,
+          profileError: err instanceof Error ? err.message : String(err),
         });
       }
     },

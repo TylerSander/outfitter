@@ -7,8 +7,11 @@ import type {
   CatalogApp,
   InstalledPackage,
   ManagerStatus,
+  NewSavedApp,
   OpEvent,
   Platform,
+  Profile,
+  Session,
   Source,
 } from "./types";
 
@@ -23,6 +26,13 @@ export interface IpcBackend {
   onOpEvent(cb: (e: OpEvent) => void): Promise<() => void>;
   openExternal(url: string): Promise<void>;
   getAppVersion(): Promise<string>;
+  login(): Promise<Session>;
+  restoreSession(): Promise<Session | null>;
+  logout(): Promise<void>;
+  getProfile(sub: string): Promise<Profile>;
+  setDisplayName(sub: string, name: string | null): Promise<Profile>;
+  addSavedApp(sub: string, entry: NewSavedApp, now: string): Promise<Profile>;
+  removeSavedApp(sub: string, id: string): Promise<Profile>;
 }
 
 export function isTauri(): boolean {
@@ -58,6 +68,14 @@ async function makeTauriBackend(): Promise<IpcBackend> {
       const { getVersion } = await import("@tauri-apps/api/app");
       return getVersion();
     },
+    login: () => invoke<Session>("login"),
+    restoreSession: () => invoke<Session | null>("restore_session"),
+    logout: () => invoke<void>("logout"),
+    getProfile: (sub) => invoke<Profile>("get_profile", { sub }),
+    setDisplayName: (sub, name) => invoke<Profile>("set_display_name", { sub, name }),
+    addSavedApp: (sub, entry, now) =>
+      invoke<Profile>("add_saved_app", { sub, entry, now }),
+    removeSavedApp: (sub, id) => invoke<Profile>("remove_saved_app", { sub, id }),
   };
 }
 
@@ -123,4 +141,36 @@ export async function openExternal(url: string): Promise<void> {
 /** App version (tauri.conf.json version in Tauri; \"dev\" in the browser mock). */
 export async function getAppVersion(): Promise<string> {
   return (await backend()).getAppVersion();
+}
+
+export async function login(): Promise<Session> {
+  return (await backend()).login();
+}
+
+export async function restoreSession(): Promise<Session | null> {
+  return (await backend()).restoreSession();
+}
+
+export async function logout(): Promise<void> {
+  return (await backend()).logout();
+}
+
+export async function getProfile(sub: string): Promise<Profile> {
+  return (await backend()).getProfile(sub);
+}
+
+export async function setDisplayName(sub: string, name: string | null): Promise<Profile> {
+  return (await backend()).setDisplayName(sub, name);
+}
+
+export async function addSavedApp(
+  sub: string,
+  entry: NewSavedApp,
+  now: string,
+): Promise<Profile> {
+  return (await backend()).addSavedApp(sub, entry, now);
+}
+
+export async function removeSavedApp(sub: string, id: string): Promise<Profile> {
+  return (await backend()).removeSavedApp(sub, id);
 }

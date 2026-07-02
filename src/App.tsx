@@ -7,6 +7,8 @@ import MyApps from "./components/MyApps";
 import AppDetail from "./components/AppDetail";
 import UpdateBanner from "./components/UpdateBanner";
 import FeedbackPanel from "./components/FeedbackPanel";
+import WelcomeScreen from "./components/WelcomeScreen";
+import Profile from "./components/Profile";
 
 export default function App() {
   const init = useStore((s) => s.init);
@@ -20,6 +22,9 @@ export default function App() {
   const searchQuery = useStore((s) => s.searchQuery);
   const setSearchQuery = useStore((s) => s.setSearchQuery);
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const session = useStore((s) => s.session);
+  const welcomeOpen = useStore((s) => s.welcomeOpen);
+  const login = useStore((s) => s.login);
 
   useEffect(() => {
     void init();
@@ -111,6 +116,15 @@ export default function App() {
           ))}
         </nav>
         <div className="border-t border-hair p-3">
+          {session !== null ? (
+            <NavItem
+              label="Profile"
+              active={activeView === "profile"}
+              onClick={() => setActiveView("profile")}
+            />
+          ) : (
+            <NavItem label="Sign in" active={false} onClick={() => void login()} />
+          )}
           <NavItem
             label="My Apps"
             badge={installedCount}
@@ -173,6 +187,11 @@ export default function App() {
                 emptyMessage={`No apps match “${searchQuery.trim()}”.`}
               />
             </>
+          ) : activeView === "profile" ? (
+            <>
+              <h1 className="index-label mb-5">Profile</h1>
+              <Profile />
+            </>
           ) : activeView === "my-apps" ? (
             <>
               <h1 className="index-label mb-5">My Apps</h1>
@@ -192,6 +211,7 @@ export default function App() {
       <AppDetail />
       <UpdateBanner />
       {feedbackOpen && <FeedbackPanel onClose={() => setFeedbackOpen(false)} />}
+      {welcomeOpen && <WelcomeScreen />}
     </div>
   );
 }
