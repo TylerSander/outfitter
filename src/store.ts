@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as ipc from "./ipc";
+import { checkForUpdate, relaunchApp, type AvailableUpdate } from "./update";
 import type {
   Catalog,
   CatalogApp,
@@ -61,6 +62,15 @@ interface OutfitterStore {
   setDisplayName(name: string | null): Promise<void>;
   addSavedApp(entry: NewSavedApp): Promise<void>;
   removeSavedApp(id: string): Promise<void>;
+  // updates
+  appVersion: string | null;
+  updatePhase: "idle" | "available" | "downloading" | "installing" | "ready" | "error";
+  updateVersion: string | null;
+  updatePercent: number | null;
+  updateError: string | null;
+  checkForUpdates(): Promise<void>;
+  startUpdate(): Promise<void>;
+  relaunchForUpdate(): Promise<void>;
   install(app: CatalogApp): Promise<void>;
   uninstall(app: CatalogApp): Promise<void>;
   clearOp(appId: string): void;
@@ -149,6 +159,7 @@ function toInstalledMap(list: InstalledPackage[]): Map<string, string> {
 // ---- store ------------------------------------------------------------------
 
 let initStarted = false; // module-level so React StrictMode double-effects are harmless
+let pendingUpdate: AvailableUpdate | null = null;
 
 export const useStore = create<OutfitterStore>()((set, get) => {
   function updateOp(
@@ -249,6 +260,11 @@ export const useStore = create<OutfitterStore>()((set, get) => {
     profile: null,
     profileBusy: false,
     profileError: null,
+    appVersion: null,
+    updatePhase: "idle",
+    updateVersion: null,
+    updatePercent: null,
+    updateError: null,
 
     init: async () => {
       if (initStarted) return;
@@ -292,6 +308,59 @@ export const useStore = create<OutfitterStore>()((set, get) => {
         // offline / no keychain — stay signed out, no gate
         set({ authBusy: false });
       }
+      // Current version (shown under Feedback) + update check.
+      void ipc
+        .getAppVersion()
+        .then((v) => set({ appVersion: v }))
+        .catch(() => undefined);
+      void get().checkForUpdates();
+      setInterval(() => void get().checkForUpdates(), 4 * 60 * 60 * 1000);
+    },
+
+    checkForUpdates: async () => {
+      const phase = get().updatePhase;
+      // never interrupt an in-flight/staged update
+      if (phase === "downloading" || phase === "installing" || phase === "ready") return;
+      try {
+        const update = await checkForUpdate();
+        if (update === null) {
+          pendingUpdate = null;
+          if (get().updatePhase === "available") {
+            set({ updatePhase: "idle", updateVersion: null });
+          }
+          return;
+        }
+        pendingUpdate = update;
+        set({ updatePhase: "available", updateVersion: update.version });
+      } catch {
+        // offline / release feed unreachable — retry on the next check
+      }
+    },
+
+    startUpdate: async () => {
+      if (pendingUpdate === null) return;
+      const busy = [...get().ops.values()].some(
+        (o) => o.phase !== "done" && o.phase !== "failed",
+      );
+      if (busy) {
+        set({ updateError: "Finish the app install/uninstall in progress first." });
+        return;
+      }
+      set({ updatePhase: "downloading", updatePercent: null, updateError: null });
+      try {
+        await pendingUpdate.install((percent) => {
+          // On Windows the updater exits the app once the download hits 100%.
+          const installing = percent === 100 && get().platform === "windows";
+          set({ updatePhase: installing ? "installing" : "downloading", updatePercent: percent });
+        });
+        set({ updatePhase: "ready" }); // reached on macOS/Linux; Windows exits first
+      } catch (e) {
+        set({ updatePhase: "error", updateError: e instanceof Error ? e.message : String(e) });
+      }
+    },
+
+    relaunchForUpdate: async () => {
+      await relaunchApp();
     },
 
     login: async () => {

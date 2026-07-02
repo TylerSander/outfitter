@@ -5,7 +5,6 @@ import Discover from "./components/Discover";
 import AppGrid from "./components/AppGrid";
 import MyApps from "./components/MyApps";
 import AppDetail from "./components/AppDetail";
-import UpdateBanner from "./components/UpdateBanner";
 import FeedbackPanel from "./components/FeedbackPanel";
 import WelcomeScreen from "./components/WelcomeScreen";
 import Profile from "./components/Profile";
@@ -136,6 +135,7 @@ export default function App() {
             active={false}
             onClick={() => setFeedbackOpen(true)}
           />
+          <SidebarUpdate />
         </div>
       </aside>
 
@@ -209,7 +209,6 @@ export default function App() {
       </div>
 
       <AppDetail />
-      <UpdateBanner />
       {feedbackOpen && <FeedbackPanel onClose={() => setFeedbackOpen(false)} />}
       {welcomeOpen && <WelcomeScreen />}
     </div>
@@ -275,6 +274,90 @@ function Logo() {
       <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none" />
       <path d="M12 3v3M12 18v3M3 12h3M18 12h3" />
     </svg>
+  );
+}
+
+function SidebarUpdate() {
+  const appVersion = useStore((s) => s.appVersion);
+  const phase = useStore((s) => s.updatePhase);
+  const version = useStore((s) => s.updateVersion);
+  const percent = useStore((s) => s.updatePercent);
+  const ops = useStore((s) => s.ops);
+  const startUpdate = useStore((s) => s.startUpdate);
+  const relaunch = useStore((s) => s.relaunchForUpdate);
+  const checkForUpdates = useStore((s) => s.checkForUpdates);
+  const opsBusy = [...ops.values()].some((o) => o.phase !== "done" && o.phase !== "failed");
+  const current = appVersion ? `Outfitter v${appVersion}` : "Outfitter";
+
+  if (phase === "available") {
+    return (
+      <div className="px-2 pt-2.5">
+        <button
+          type="button"
+          disabled={opsBusy}
+          onClick={() => void startUpdate()}
+          title={`Update to v${version}`}
+          className="w-full text-left text-[10.5px] font-bold uppercase tracking-[2px] text-amber transition-colors hover:text-amber-hi disabled:opacity-50"
+        >
+          ↑ Update to v{version}
+        </button>
+        <p className="mt-1 font-mono text-[9.5px] tracking-[1px] text-mute">
+          {opsBusy ? "finishing current task…" : current}
+        </p>
+      </div>
+    );
+  }
+  if (phase === "downloading") {
+    return (
+      <div className="px-2 pt-2.5">
+        <p className="text-[10px] uppercase tracking-[2px] text-amber">Updating…</p>
+        <div className="mt-1.5 h-px w-full overflow-hidden bg-hair">
+          {percent === null ? (
+            <div className="obs-pulse h-full w-1/3 bg-amber" />
+          ) : (
+            <div className="h-full bg-amber transition-[width]" style={{ width: `${percent}%` }} />
+          )}
+        </div>
+      </div>
+    );
+  }
+  if (phase === "installing") {
+    return (
+      <p className="obs-pulse px-2 pt-2.5 text-[10px] uppercase tracking-[2px] text-amber">
+        Installing — reopening…
+      </p>
+    );
+  }
+  if (phase === "ready") {
+    return (
+      <div className="px-2 pt-2.5">
+        <button
+          type="button"
+          onClick={() => void relaunch()}
+          className="text-[10.5px] font-bold uppercase tracking-[2px] text-amber transition-colors hover:text-amber-hi"
+        >
+          ↻ Restart to finish
+        </button>
+      </div>
+    );
+  }
+  if (phase === "error") {
+    return (
+      <div className="px-2 pt-2.5">
+        <p className="text-[10px] uppercase tracking-[1px] text-coral">Update failed</p>
+        <button
+          type="button"
+          onClick={() => void checkForUpdates()}
+          className="mt-0.5 font-mono text-[9.5px] tracking-[1px] text-mute transition-colors hover:text-paper"
+        >
+          {current} · retry
+        </button>
+      </div>
+    );
+  }
+  // idle / up to date — just show the current version under Feedback
+  return (
+    <p className="px-2 pt-2.5 font-mono text-[9.5px] tracking-[1px] text-mute">{current}</p>
   );
 }
 
