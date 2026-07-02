@@ -1,0 +1,346 @@
+[
+ {
+  "app_id": "adobe-creative-cloud",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Adobe_Creative_Cloud_rainbow_icon.svg",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Adobe_Creative_Cloud_rainbow_icon.svg",
+  "format": "svg",
+  "quality": "good",
+  "notes": "Official Creative Cloud rainbow icon artwork (SVG, image/svg+xml, 57KB, 240x234 viewbox). creativecloud.adobe.com is a JS app exposing no icon link tags, so Commons SVG of the official logo used per rules."
+ },
+ {
+  "app_id": "brave",
+  "icon_url": "https://dl.flathub.org/media/com/brave/Browser/c309d7c81e783cc761cce34239b7eab7/icons/128x128/com.brave.Browser.png",
+  "source_page": "https://flathub.org/apps/com.brave.Browser",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, verified HTTP 200 image/png 128x128 (4.6KB)."
+ },
+ {
+  "app_id": "codex-desktop",
+  "icon_url": "https://openai.gallerycdn.vsassets.io/extensions/openai/chatgpt/26.5623.61825/1782701545680/Microsoft.VisualStudio.Services.Icons.Default",
+  "source_page": "https://marketplace.visualstudio.com/items?itemName=openai.chatgpt",
+  "format": "png",
+  "quality": "acceptable",
+  "notes": "Official Codex logo published by OpenAI on their VS Code extension listing; verified 385x385 PNG, image/png. No logo asset exists in the openai/codex GitHub repo and openai.com blocks fetches (403); developers.openai.com favicon is only 48px OpenAI mark. URL is version-pinned so it may change on extension updates."
+ },
+ {
+  "app_id": "elgato-stream-deck",
+  "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/e9/98/8f/e9988f20-b97b-d532-fcec-a0148f44d098/AppIcon-0-0-1x_U007epad-0-1-0-85-220.png/512x512bb.png",
+  "source_page": "https://apps.apple.com/us/app/elgato-stream-deck-mobile/id1440014184",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official Stream Deck app icon as published by Corsair/Elgato on their App Store listing (Stream Deck Mobile, same branding as desktop app); verified 512x512 image/png (138KB). elgato.com only exposes the generic Elgato brand favicon (192px), not a Stream Deck-specific icon."
+ },
+ {
+  "app_id": "git",
+  "icon_url": "https://git-scm.com/images/logos/downloads/Git-Icon-1788C.svg",
+  "source_page": "https://git-scm.com/downloads/logos",
+  "format": "svg",
+  "quality": "good",
+  "notes": "Official Git icon (orange, color 1788C) from git-scm.com's own logo downloads page; verified HTTP 200 image/svg+xml. PNG variant also exists at Git-Icon-1788C.png."
+ },
+ {
+  "app_id": "lm-studio",
+  "icon_url": "https://dl.flathub.org/media/ai/lmstudio/lm-studio/64260fa9eaff95d9c4b0e61cbce0fea7/icons/128x128/ai.lmstudio.lm-studio.png",
+  "source_page": "https://flathub.org/apps/ai.lmstudio.lm-studio",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, verified HTTP 200 image/png 128x128 (6KB)."
+ },
+ {
+  "app_id": "notepad-plus-plus",
+  "icon_url": "https://notepad-plus-plus.org/apple-touch-icon.png",
+  "source_page": "https://notepad-plus-plus.org/",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official site apple-touch-icon declared in homepage <link rel> tags; verified HTTP 200 image/png, 256x256 (78KB)."
+ },
+ {
+  "app_id": "obsidian",
+  "icon_url": "https://dl.flathub.org/media/md/obsidian/Obsidian/19cccab7eeb814d09d8d7fb95b311088/icons/128x128/md.obsidian.Obsidian.png",
+  "source_page": "https://flathub.org/apps/md.obsidian.Obsidian",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, verified HTTP 200 image/png 128x128 (9.7KB)."
+ },
+ {
+  "app_id": "python-3",
+  "icon_url": "https://www.python.org/static/opengraph-icon-200x200.png",
+  "source_page": "https://www.python.org",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official two-snakes Python logo icon served from python.org itself; verified HTTP 200 image/png, 200x200 (7.8KB). Vector wordmark version also available at python.org/static/community_logos/python-logo-generic.svg."
+ },
+ {
+  "app_id": "spotify",
+  "icon_url": "https://dl.flathub.org/media/com/spotify/Client/a575c765ca887eaac715448f7d1581ab/icons/128x128/com.spotify.Client.png",
+  "source_page": "https://flathub.org/apps/com.spotify.Client",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, verified HTTP 200 image/png 128x128 (3.5KB)."
+ },
+ {
+  "app_id": "visual-studio-code",
+  "icon_url": "https://dl.flathub.org/media/com/visualstudio/code/9446fd89defdca780524248f6d62994f/icons/128x128/com.visualstudio.code.png",
+  "source_page": "https://flathub.org/apps/com.visualstudio.code",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, verified HTTP 200 image/png 128x128 (11KB)."
+ },
+ {
+  "app_id": "audacity",
+  "icon_url": "https://dl.flathub.org/media/org/audacityteam/Audacity/0ad4a24524b6c06220649dc83a08ae81/icons/128x128/org.audacityteam.Audacity.png",
+  "source_page": "https://flathub.org/apps/org.audacityteam.Audacity",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, publisher-provided. Verified HTTP 200, image/png, 128x128, 11.8 KB."
+ },
+ {
+  "app_id": "claude-code-cli",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Claude_AI_symbol.svg",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Claude_AI_symbol.svg",
+  "format": "svg",
+  "quality": "acceptable",
+  "notes": "Official Claude spark symbol (SVG, nominal 512x512) from Wikimedia Commons; Anthropic publishes no dedicated Claude Code icon. Verified 200, image/svg+xml. Alternative: claude.ai apple-touch-icon 180x180 PNG at https://assets-proxy.anthropic.com/claude-ai/v2/assets/v1/c129d018a-jJjJELY8.png (hash-versioned URL, may rotate on deploys)."
+ },
+ {
+  "app_id": "cursor",
+  "icon_url": "https://cursor.com/marketing-static/icon-512x512.png",
+  "source_page": "https://www.cursor.com/",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official site icon declared in cursor.com <link rel=icon sizes=512x512>. Verified 200, image/png, actual 512x512, 3.9 KB. Visually confirmed the Cursor cube mark."
+ },
+ {
+  "app_id": "epic-games-launcher",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Epic_Games_logo.svg",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Epic_Games_logo.svg",
+  "format": "svg",
+  "quality": "good",
+  "notes": "Official Epic Games badge logo (the launcher app icon artwork), SVG 647x751 nominal, 25 KB. Verified 200, image/svg+xml. store.epicgames.com itself only exposes a favicon.ico."
+ },
+ {
+  "app_id": "google-chrome",
+  "icon_url": "https://dl.flathub.org/media/com/google/Chrome/471352e959c332b504e355af397d447f/icons/128x128/com.google.Chrome.png",
+  "source_page": "https://flathub.org/apps/com.google.Chrome",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon. Verified HTTP 200, image/png, 128x128, 6.3 KB."
+ },
+ {
+  "app_id": "medal-tv",
+  "icon_url": "https://medal.tv/assets/favicons/android-icon-192x192.png",
+  "source_page": "https://medal.tv/press",
+  "format": "png",
+  "quality": "good",
+  "notes": "Medal's own first-party site icon (referenced from their press page shell). Verified 200, image/png, actual 192x192, 15.6 KB. Visually confirmed the white Medal M mark on dark rounded square. Root favicon.ico is only 16x16; no public press-kit download links found."
+ },
+ {
+  "app_id": "notion",
+  "icon_url": "https://www.notion.com/front-static/logo-ios.png",
+  "source_page": "https://www.notion.com",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official apple-touch-icon declared on notion.com homepage. Verified 200, image/png, actual 512x512, 8.1 KB. Visually confirmed the Notion block-N logo."
+ },
+ {
+  "app_id": "opera-gx",
+  "icon_url": "https://dl.flathub.org/media/com/opera/opera-gx/5549e818bea0dad3675177e35ebf8e84/icons/128x128/com.opera.opera-gx.png",
+  "source_page": "https://flathub.org/apps/com.opera.opera-gx",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon. Verified HTTP 200, image/png, 128x128, 7.9 KB."
+ },
+ {
+  "app_id": "rustdesk",
+  "icon_url": "https://dl.flathub.org/media/com/rustdesk/RustDesk/0815aaa7fd2e4a05ea2555bb9a445559/icons/128x128/com.rustdesk.RustDesk.png",
+  "source_page": "https://flathub.org/apps/com.rustdesk.RustDesk",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon. Verified HTTP 200, image/png, 128x128, 5.4 KB."
+ },
+ {
+  "app_id": "steam",
+  "icon_url": "https://dl.flathub.org/media/com/valvesoftware/Steam/f0343a4b277e822cce53b904454d3a7d/icons/128x128/com.valvesoftware.Steam.png",
+  "source_page": "https://flathub.org/apps/com.valvesoftware.Steam",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon. Verified HTTP 200, image/png, 128x128, 9.6 KB."
+ },
+ {
+  "app_id": "vlc",
+  "icon_url": "https://dl.flathub.org/media/org/videolan/VLC/34e7c2b6a026c5c290606225a84582d3/icons/128x128/org.videolan.VLC.png",
+  "source_page": "https://flathub.org/apps/org.videolan.VLC",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon. Verified HTTP 200, image/png, 128x128, 15.9 KB."
+ },
+ {
+  "app_id": "balena-etcher",
+  "icon_url": "https://raw.githubusercontent.com/balena-io/etcher/master/assets/icon.png",
+  "source_page": "https://github.com/balena-io/etcher/tree/master/assets",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official app icon from the balena-io/etcher GitHub repo. Verified 200 OK, image/png, 256x256, 5.5 KB. (Same artwork as the 256x256 apple-touch-icon at https://etcher.balena.io/images/webclip.png.)"
+ },
+ {
+  "app_id": "claude-code-desktop",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Claude_AI_symbol.svg",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Claude_AI_symbol.svg",
+  "format": "svg",
+  "quality": "good",
+  "notes": "Official Claude spark/starburst symbol as SVG (512x512 nominal) from Wikimedia Commons. Verified 200 OK, image/svg+xml. claude.com itself only exposes a 32x32 favicon PNG, so this is the best official artwork available."
+ },
+ {
+  "app_id": "discord",
+  "icon_url": "https://dl.flathub.org/media/com/discordapp/Discord/b57edb0449c33581850e2c2883922669/icons/128x128/com.discordapp.Discord.png",
+  "source_page": "https://flathub.org/apps/com.discordapp.Discord",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon (publisher-provided). Verified 200 OK, image/png, 128x128, 3.4 KB."
+ },
+ {
+  "app_id": "firefox",
+  "icon_url": "https://dl.flathub.org/media/icons/128x128/org.mozilla.firefox.png",
+  "source_page": "https://flathub.org/apps/org.mozilla.firefox",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon (Mozilla-published flatpak). Verified 200 OK, image/png, 128x128, 14.8 KB."
+ },
+ {
+  "app_id": "handbrake",
+  "icon_url": "https://dl.flathub.org/media/fr/handbrake/ghb/8b6f3d2538a18608b88cfb8a8dde900e/icons/128x128/fr.handbrake.ghb.png",
+  "source_page": "https://flathub.org/apps/fr.handbrake.ghb",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon (HandBrake team flatpak). Verified 200 OK, image/png, 128x128, 26.9 KB."
+ },
+ {
+  "app_id": "mobaxterm",
+  "icon_url": "https://www.mobatek.net/img/mobaxterm_logo.png",
+  "source_page": "https://www.mobatek.net/",
+  "format": "png",
+  "quality": "acceptable",
+  "notes": "Official MobaXterm product logo from the Mobatek (publisher) website. Verified 200 OK, image/png, 150x110, 4.9 KB. Only official raster available: site favicon is 16/32px only, homepage header logo is 48x48, and no press kit or larger asset was found. Below the 128px-square ideal and non-square aspect."
+ },
+ {
+  "app_id": "nvidia-app",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/commons/4/48/Nvidia_Logo.svg",
+  "source_page": "https://commons.wikimedia.org/wiki/File:Nvidia_Logo.svg",
+  "format": "svg",
+  "quality": "acceptable",
+  "notes": "Official NVIDIA eye+wordmark corporate logo SVG (400x320 nominal) from Wikimedia Commons. Verified 200 OK, image/svg+xml. NVIDIA does not publish a standalone icon for the NVIDIA App (its product page only has a 1200x630 og:image JPG banner), so this is the corporate logo rather than the app-specific tile icon."
+ },
+ {
+  "app_id": "oracle-jdk",
+  "icon_url": "https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg",
+  "source_page": "https://en.wikipedia.org/wiki/File:Java_programming_language_logo.svg",
+  "format": "svg",
+  "quality": "good",
+  "notes": "Official Java coffee-cup logo SVG (234x428 nominal) hosted on en.wikipedia.org. Verified 200 OK, image/svg+xml, 4.1 KB. Oracle's own site offers no direct-download logo asset; this is the official Java trademark artwork."
+ },
+ {
+  "app_id": "signal",
+  "icon_url": "https://dl.flathub.org/media/org/signal/Signal/e354cfef2794881d868cee7a61242527/icons/128x128/org.signal.Signal.png",
+  "source_page": "https://flathub.org/apps/org.signal.Signal",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon. Verified 200 OK, image/png, 128x128, 7.3 KB."
+ },
+ {
+  "app_id": "telegram-desktop",
+  "icon_url": "https://dl.flathub.org/media/org/telegram/desktop/1b4a76514205ff1288fecabd9b864ab3/icons/128x128/org.telegram.desktop.png",
+  "source_page": "https://flathub.org/apps/org.telegram.desktop",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon (official Telegram Desktop flatpak). Verified 200 OK, image/png, 128x128, 6.6 KB."
+ },
+ {
+  "app_id": "willow-voice",
+  "icon_url": "https://framerusercontent.com/images/gPtwiB26ZlFvipVrqFbKRQ6j1A.png",
+  "source_page": "https://willowvoice.com",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official apple-touch-icon declared in willowvoice.com homepage HTML (served from their Framer site CDN). Verified 200 OK, image/png, 512x512."
+ },
+ {
+  "app_id": "bitwarden",
+  "icon_url": "https://dl.flathub.org/media/com/bitwarden/desktop/4582dbf16644f0bd01dd3f6acbab9b09/icons/128x128/com.bitwarden.desktop.png",
+  "source_page": "https://flathub.org/apps/com.bitwarden.desktop",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, publisher-provided. Verified HTTP 200, content-type image/png, 128x128, ~9.6 KB."
+ },
+ {
+  "app_id": "codex-cli",
+  "icon_url": "https://avatars.githubusercontent.com/u/14957082?s=256&v=4",
+  "source_page": "https://github.com/openai",
+  "format": "png",
+  "quality": "acceptable",
+  "notes": "Codex CLI has no distinct product icon; the openai/codex repo only contains a terminal splash screenshot (.github/codex-cli-splash.png), and developers.openai.com serves a tiny 32px favicon. This is OpenAI's official GitHub org avatar (the OpenAI blossom logo), verified 200, image/png, 200x200. Visually confirmed."
+ },
+ {
+  "app_id": "docker-desktop",
+  "icon_url": "https://www.docker.com/app/uploads/2024/02/cropped-docker-logo-favicon-192x192.png",
+  "source_page": "https://www.docker.com/",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official docker.com site icon (Docker whale logo), declared in the homepage <link rel=icon sizes=192x192> tag. Verified 200, image/png, 192x192, ~3 KB. Wikimedia Commons SVG also available as alternate: https://upload.wikimedia.org/wikipedia/commons/4/4e/Docker_%28container_engine%29_logo.svg (verified image/svg+xml, but it is the horizontal wordmark, less icon-shaped)."
+ },
+ {
+  "app_id": "gamesir-connect",
+  "icon_url": "https://gamesir.com/cdn/shop/files/fv.png?v=1737965280",
+  "source_page": "https://www.gamesir.hk/",
+  "format": "png",
+  "quality": "acceptable",
+  "notes": "GameSir publishes no Connect-app-specific icon on their site (checked /pages/software and /pages/software-detail; only product photos and a white-on-transparent footer logo). This is the official GameSir brand mark (full-color eagle 'G') from their site's apple-touch-icon/favicon link tags. Verified 200, image/png, 112x112 (slightly under 128px; original asset size, CDN does not upscale). Visually confirmed."
+ },
+ {
+  "app_id": "hermes-agent-cli",
+  "icon_url": "https://raw.githubusercontent.com/NousResearch/hermes-agent/main/apps/desktop/assets/icon.png",
+  "source_page": "https://github.com/NousResearch/hermes-agent",
+  "format": "png",
+  "quality": "good",
+  "notes": "Official Hermes desktop app icon from the NousResearch/hermes-agent repo (apps/desktop/assets/icon.png). Verified 200, image/png, 1024x1024, ~574 KB. Visually confirmed as the Hermes mascot app icon. The site's own /icon.png is only 48x48."
+ },
+ {
+  "app_id": "multimc",
+  "icon_url": "https://raw.githubusercontent.com/MultiMC/Launcher/develop/branding/logo.svg",
+  "source_page": "https://github.com/MultiMC/Launcher/tree/develop/branding",
+  "format": "svg",
+  "quality": "good",
+  "notes": "Official MultiMC logo SVG from the project's branding directory (default branch 'develop'). Verified 200, content-type image/svg+xml, ~22.8 KB, scalable. Raster alternate: https://multimc.org/apple-touch-icon.png (verified image/png, 180x180)."
+ },
+ {
+  "app_id": "obs-studio",
+  "icon_url": "https://dl.flathub.org/media/com/obsproject/Studio/6ef7d4faf19568d90bdbb3868f938333/icons/128x128/com.obsproject.Studio.png",
+  "source_page": "https://flathub.org/apps/com.obsproject.Studio",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, publisher-provided. Verified 200, image/png, 128x128, ~14.6 KB."
+ },
+ {
+  "app_id": "prism-launcher",
+  "icon_url": "https://dl.flathub.org/media/org/prismlauncher/PrismLauncher/9a1f7fe85e8ccfbd459c1dd3c70663af/icons/128x128/org.prismlauncher.PrismLauncher.png",
+  "source_page": "https://flathub.org/apps/org.prismlauncher.PrismLauncher",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, publisher-provided. Verified 200, image/png, 128x128, ~6.2 KB."
+ },
+ {
+  "app_id": "slack",
+  "icon_url": "https://dl.flathub.org/media/com/slack/Slack/4937ca7c6c2d68d274795afce40af1c4/icons/128x128/com.slack.Slack.png",
+  "source_page": "https://flathub.org/apps/com.slack.Slack",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, publisher-provided. Verified 200, image/png, 128x128, ~3.4 KB."
+ },
+ {
+  "app_id": "termius",
+  "icon_url": "https://dl.flathub.org/media/com/termius/Termius/17f894a92fc1ec7263418f83a9b71309/icons/128x128/com.termius.Termius.png",
+  "source_page": "https://flathub.org/apps/com.termius.Termius",
+  "format": "png",
+  "quality": "good",
+  "notes": "Flathub appstream icon, publisher-provided. Verified 200, image/png, 128x128, ~9.4 KB."
+ }
+]

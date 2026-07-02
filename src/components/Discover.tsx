@@ -27,10 +27,10 @@ export default function Discover() {
   if (!catalog) return null;
 
   return (
-    <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-11">
       {featured.length > 0 && (
         <section>
-          <h2 className="mb-3 text-base font-semibold text-slate-100">Featured</h2>
+          <h2 className="index-label mb-4">Featured</h2>
           <div className="flex gap-4 overflow-x-auto pb-2">
             {featured.map((app) => (
               <div key={app.id} className="w-72 shrink-0">
@@ -48,13 +48,13 @@ export default function Discover() {
         if (apps.length === 0) return null;
         return (
           <section key={cat.id}>
-            <div className="mb-3 flex items-baseline justify-between gap-3">
-              <h2 className="text-base font-semibold text-slate-100">{cat.name}</h2>
+            <div className="mb-4 flex items-baseline justify-between gap-3">
+              <h2 className="index-label flex-1">{cat.name}</h2>
               {apps.length > CATEGORY_ROW_LIMIT && (
                 <button
                   type="button"
                   onClick={() => setActiveView(cat.id)}
-                  className="inline-flex items-center gap-0.5 text-xs font-medium text-sky-400 transition-colors hover:text-sky-300"
+                  className="inline-flex items-center gap-1 text-[10px] uppercase tracking-[3px] text-amber transition-all hover:tracking-[4px] hover:text-amber-hi"
                 >
                   See all
                   <ChevronRight />
@@ -72,7 +72,7 @@ export default function Discover() {
 function ChevronRight() {
   return (
     <svg
-      className="h-3.5 w-3.5"
+      className="h-3 w-3"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

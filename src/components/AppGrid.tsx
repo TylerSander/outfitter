@@ -10,7 +10,7 @@ export default function AppGrid({
 }) {
   if (apps.length === 0) {
     return (
-      <div className="flex items-center justify-center rounded-xl border border-dashed border-slate-800 px-6 py-16 text-center text-sm text-slate-500">
+      <div className="flex items-center justify-center border border-dashed border-hair px-6 py-16 text-center font-serif text-sm italic text-mute">
         {emptyMessage}
       </div>
     );

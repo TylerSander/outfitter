@@ -2,6 +2,7 @@ import type { InstallState, OpKind, Platform } from "../types";
 import { OS_LABEL } from "../types";
 
 // Single source of truth for the install-state -> button mapping.
+// Observatory language: letterspaced caps over a hairline, no filled pills.
 
 interface StateButtonProps {
   state: InstallState;
@@ -47,12 +48,12 @@ function configFor(state: InstallState, platform: Platform): ButtonConfig {
 }
 
 const INTENT_CLASSES: Record<Intent, string> = {
-  primary: "bg-sky-600 text-white hover:bg-sky-500 active:bg-sky-600",
-  busy: "bg-slate-800 text-slate-300",
-  quiet:
-    "border border-slate-700 bg-transparent text-slate-300 hover:border-red-800/80 hover:bg-red-950/40 hover:text-red-300",
-  warning: "bg-amber-600 text-white hover:bg-amber-500",
-  disabled: "bg-slate-800/60 text-slate-500",
+  primary:
+    "border-b border-hair-amber text-amber hover:border-amber-hi hover:text-amber-hi",
+  busy: "obs-busy border-b border-hair-amber text-amber",
+  quiet: "border-b border-hair text-mute hover:border-coral/60 hover:text-coral",
+  warning: "border-b border-coral/60 text-coral hover:text-paper-hi",
+  disabled: "border-b border-transparent text-mute/50",
 };
 
 export default function StateButton({
@@ -66,8 +67,8 @@ export default function StateButton({
   const cfg = configFor(state, platform);
   const sizeClasses =
     size === "lg"
-      ? "w-full justify-center px-5 py-2.5 text-sm font-semibold"
-      : "px-3 py-1.5 text-xs font-medium";
+      ? "w-full justify-center px-4 pb-2 pt-2.5 text-[12px] tracking-[5px]"
+      : "px-1 pb-1 pt-1 text-[10.5px] tracking-[3px]";
 
   return (
     <button
@@ -80,7 +81,7 @@ export default function StateButton({
         else if (state === "failed" && failedKind === "uninstall") onUninstall();
         else onInstall();
       }}
-      className={`inline-flex shrink-0 select-none items-center gap-1.5 whitespace-nowrap rounded-lg transition-colors disabled:cursor-not-allowed ${sizeClasses} ${INTENT_CLASSES[cfg.intent]}`}
+      className={`inline-flex shrink-0 select-none items-center gap-2 whitespace-nowrap bg-transparent uppercase transition-all duration-200 disabled:cursor-not-allowed ${sizeClasses} ${INTENT_CLASSES[cfg.intent]}`}
     >
       {cfg.spinner && <Spinner />}
       {cfg.label}
@@ -91,7 +92,7 @@ export default function StateButton({
 function Spinner() {
   return (
     <svg
-      className="h-3.5 w-3.5 animate-spin"
+      className="h-3 w-3 animate-spin"
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
@@ -102,12 +103,12 @@ function Spinner() {
         cy="12"
         r="10"
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth="3"
       />
       <path
         d="M12 2a10 10 0 0 1 10 10"
         stroke="currentColor"
-        strokeWidth="4"
+        strokeWidth="3"
         strokeLinecap="round"
       />
     </svg>

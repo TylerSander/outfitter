@@ -47,13 +47,13 @@ export default function AppDetail() {
       <div
         onClick={() => selectApp(null)}
         aria-hidden="true"
-        className={`fixed inset-0 z-30 bg-black/50 backdrop-blur-[2px] transition-opacity duration-200 ${
+        className={`fixed inset-0 z-30 bg-black/60 backdrop-blur-[2px] transition-opacity duration-200 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
       <aside
         aria-hidden={!open}
-        className={`fixed inset-y-0 right-0 z-40 flex w-full max-w-md transform flex-col border-l border-slate-800 bg-slate-950 shadow-2xl transition-transform duration-200 ease-out ${
+        className={`fixed inset-y-0 right-0 z-40 flex w-full max-w-md transform flex-col border-l border-hair-amber/50 bg-ink shadow-2xl shadow-black/60 transition-transform duration-200 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -92,18 +92,21 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
   return (
     <>
       {/* header */}
-      <header className="flex items-start gap-4 border-b border-slate-800/80 px-5 py-5">
-        <AppIcon app={app} className="h-16 w-16 text-2xl" />
+      <header className="flex items-start gap-4 border-b border-hair px-6 py-6">
+        <AppIcon app={app} className="h-16 w-16 text-3xl" />
         <div className="min-w-0 flex-1 pt-0.5">
-          <h2 className="truncate text-lg font-semibold text-slate-100">{app.name}</h2>
-          <p className="mt-0.5 text-xs text-slate-500">
+          <h2 className="truncate text-xl font-bold uppercase tracking-[3px] text-paper-hi">
+            {app.name}
+          </h2>
+          <p className="mt-1 text-[10px] uppercase tracking-[3px] text-mute">
             {category !== undefined ? category.name : app.category}
           </p>
           {source !== null && (
-            <p className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+            <p className="mt-2.5 flex flex-wrap items-center gap-2 text-[11px] text-mute">
               <span className="truncate">
-                via <span className="text-slate-400">{source.manager}</span> ·{" "}
-                <span className="font-mono text-slate-400">{source.id}</span>
+                via <span className="text-paper">{source.manager}</span>
+                <span className="mx-1 text-amber">·</span>
+                <span className="font-mono text-paper/80">{source.id}</span>
               </span>
               {!source.official && <CommunityBadge />}
             </p>
@@ -113,14 +116,14 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="rounded-lg p-1.5 text-slate-500 transition-colors hover:bg-slate-900 hover:text-slate-200"
+          className="p-1.5 text-mute transition-colors hover:text-amber-hi"
         >
           <svg
             className="h-4 w-4"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth="1.6"
             strokeLinecap="round"
             aria-hidden="true"
           >
@@ -130,7 +133,7 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
       </header>
 
       {/* body */}
-      <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-5 py-5">
+      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-6 py-6">
         <div className="flex flex-col gap-3">
           <StateButton
             state={state}
@@ -142,24 +145,24 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
           />
 
           {opActive && (
-            <div className="h-1 w-full overflow-hidden rounded-full bg-slate-800">
+            <div className="h-px w-full overflow-hidden bg-hair">
               <div
-                className="h-full rounded-full bg-sky-500 transition-[width] duration-300"
+                className="h-full bg-amber transition-[width] duration-300"
                 style={{ width: `${op.percent ?? 3}%` }}
               />
             </div>
           )}
 
           {op !== undefined && op.phase === "failed" && (
-            <div className="rounded-lg border border-red-900/60 bg-red-950/40 p-3">
+            <div className="border border-coral/40 bg-coral/5 p-3">
               <div className="flex items-start justify-between gap-3">
-                <p className="whitespace-pre-wrap break-words text-xs leading-relaxed text-red-300">
+                <p className="whitespace-pre-wrap break-words font-serif text-xs italic leading-relaxed text-coral">
                   {op.error ?? "Operation failed."}
                 </p>
                 <button
                   type="button"
                   onClick={() => clearOp(app.id)}
-                  className="shrink-0 text-[11px] font-medium text-red-400/80 transition-colors hover:text-red-300"
+                  className="shrink-0 text-[9.5px] uppercase tracking-[2px] text-coral/80 transition-colors hover:text-paper-hi"
                 >
                   Dismiss
                 </button>
@@ -168,26 +171,31 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
           )}
 
           {version !== null && (
-            <p className="text-[11px] text-slate-500">
-              Installed version <span className="font-mono text-slate-400">{version}</span>
+            <p className="text-[10px] uppercase tracking-[2px] text-mute">
+              Installed{" "}
+              <span className="ml-1 font-mono normal-case tracking-normal text-paper/80">
+                {version}
+              </span>
             </p>
           )}
           {source?.note !== undefined && (
-            <p className="text-[11px] italic text-slate-500">{source.note}</p>
+            <p className="font-serif text-[11.5px] italic leading-relaxed text-mute">
+              {source.note}
+            </p>
           )}
         </div>
 
         {/* live log */}
         {op !== undefined && (
-          <section className="overflow-hidden rounded-lg border border-slate-800 bg-slate-900/60">
+          <section className="overflow-hidden border border-hair">
             <button
               type="button"
               onClick={() => setLogOpen((v) => !v)}
-              className="flex w-full items-center justify-between px-3 py-2 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200"
+              className="flex w-full items-center justify-between px-3 py-2 text-[10px] uppercase tracking-[3px] text-mute transition-colors hover:text-paper"
             >
               <span>Activity log</span>
               <svg
-                className={`h-3.5 w-3.5 transition-transform ${logOpen ? "rotate-180" : ""}`}
+                className={`h-3 w-3 transition-transform ${logOpen ? "rotate-180" : ""}`}
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -202,7 +210,7 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
             {logOpen && (
               <pre
                 ref={logRef}
-                className="max-h-56 select-text overflow-y-auto whitespace-pre-wrap break-words border-t border-slate-800 px-3 py-2 font-mono text-[11px] leading-relaxed text-slate-400"
+                className="max-h-56 select-text overflow-y-auto whitespace-pre-wrap break-words border-t border-hair px-3 py-2 font-mono text-[11px] leading-relaxed text-mute"
               >
                 {op.log.length > 0 ? op.log.join("\n") : "Waiting for output…"}
               </pre>
@@ -213,7 +221,7 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
         {/* description */}
         <div className="flex flex-col gap-3">
           {app.description.split(/\n{2,}/).map((para, i) => (
-            <p key={i} className="text-sm leading-relaxed text-slate-300">
+            <p key={i} className="font-serif text-[13.5px] italic leading-[1.7] text-paper/90">
               {para}
             </p>
           ))}
@@ -221,11 +229,11 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
 
         {/* tags */}
         {app.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
             {app.tags.map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-slate-900 px-2 py-0.5 text-[11px] text-slate-400 ring-1 ring-inset ring-slate-800"
+                className="text-[9.5px] uppercase tracking-[2.5px] text-mute before:mr-1.5 before:text-amber before:content-['·']"
               >
                 {tag}
               </span>
@@ -234,18 +242,18 @@ function DetailBody({ app, onClose }: { app: CatalogApp; onClose: () => void }) 
         )}
 
         {/* meta */}
-        <dl className="mt-auto grid grid-cols-2 gap-x-4 gap-y-3 border-t border-slate-800/80 pt-4 text-xs">
+        <dl className="mt-auto grid grid-cols-2 gap-x-4 gap-y-3 border-t border-hair pt-4">
           <div>
-            <dt className="text-slate-500">License</dt>
-            <dd className="mt-0.5 text-slate-300">{app.license}</dd>
+            <dt className="text-[9.5px] uppercase tracking-[3px] text-mute">License</dt>
+            <dd className="mt-1 text-xs text-paper">{app.license}</dd>
           </div>
           <div>
-            <dt className="text-slate-500">Homepage</dt>
-            <dd className="mt-0.5">
+            <dt className="text-[9.5px] uppercase tracking-[3px] text-mute">Homepage</dt>
+            <dd className="mt-1">
               <button
                 type="button"
                 onClick={() => void openExternal(app.homepage)}
-                className="inline-flex max-w-full items-center gap-1 text-sky-400 transition-colors hover:text-sky-300"
+                className="inline-flex max-w-full items-center gap-1 border-b border-hair-amber pb-px text-xs text-amber transition-colors hover:border-amber-hi hover:text-amber-hi"
               >
                 <span className="truncate">{hostFor(app.homepage)}</span>
                 <svg

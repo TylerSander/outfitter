@@ -1,11 +1,31 @@
 @import "tailwindcss";
 
+/* ============================================================
+   OUTFITTER — Observatory theme
+   Shared design language with the DevSystems projects dashboard:
+   a dark instrument. Warm amber on near-black ink, hairline
+   rules, condensed industrial caps + italic serif, mechanical
+   mono numerals, film grain. No neon.
+   ============================================================ */
+
 @theme {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
-  --font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --color-ink: #0b0a10;
+  --color-ink-2: #14121a;
+  --color-paper: #ece6d9;
+  --color-paper-hi: #f7f2e7;
+  --color-mute: #8f8899;
+  --color-amber: #e8b04b;
+  --color-amber-hi: #ffd98a;
+  --color-mint: #9fe870;
+  --color-coral: #ff8577;
+  --color-hair: rgba(236, 230, 217, 0.11);
+  --color-hair-strong: rgba(236, 230, 217, 0.22);
+  --color-hair-amber: rgba(232, 176, 75, 0.35);
+
+  --font-disp:
+    Bahnschrift, "Avenir Next Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-mono: Consolas, "SF Mono", Menlo, monospace;
 }
 
 :root {
@@ -20,20 +40,128 @@ body,
 
 body {
   margin: 0;
-  background-color: var(--color-slate-950);
-  color: var(--color-slate-200);
-  font-family: var(--font-sans);
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-disp);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior: none;
+}
+
+/* ---------- atmosphere: vignette + film grain ---------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 120% 90% at 50% 20%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(1) infinite;
+}
+
+@keyframes grain {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-2%, 3%);
+  }
+  40% {
+    transform: translate(3%, -2%);
+  }
+  60% {
+    transform: translate(-3%, -2%);
+  }
+  80% {
+    transform: translate(2%, 2%);
+  }
+}
+
+/* ---------- shared instrument details ---------- */
+
+/* Section heading: letterspaced caps with a trailing hairline. */
+.index-label {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 10.5px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--color-mute);
+}
+.index-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-hair);
+}
+
+/* Divider with a slow traveling amber glint (dashboard signature). */
+.divider-glint {
+  height: 1px;
+  background: var(--color-hair);
+  position: relative;
+  overflow: hidden;
+}
+.divider-glint::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--color-amber), transparent);
+  animation: travel 12s ease-in-out infinite;
+}
+@keyframes travel {
+  0%,
+  100% {
+    left: -60px;
+  }
+  50% {
+    left: 100%;
+  }
+}
+
+@keyframes obs-pulse {
+  50% {
+    opacity: 0.25;
+  }
+}
+.obs-pulse {
+  animation: obs-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes syncing {
+  50% {
+    opacity: 0.35;
+    letter-spacing: 5px;
+  }
+}
+.obs-busy {
+  animation: syncing 1s ease-in-out infinite;
 }
 
 /* subtle, dark-friendly scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-slate-700) transparent;
+  scrollbar-color: rgba(143, 136, 153, 0.4) transparent;
 }
 
 ::selection {
-  background-color: var(--color-sky-800);
-  color: var(--color-slate-100);
+  background-color: rgba(232, 176, 75, 0.3);
+  color: var(--color-paper-hi);
 }

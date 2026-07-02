@@ -82,27 +82,27 @@ export default function UpdateBanner() {
   return (
     // Bottom-LEFT deliberately: the AppDetail slide-over owns the right edge,
     // and an opaque card there would cover its bottom controls.
-    <div className="fixed bottom-4 left-4 z-40 w-80 rounded-xl border border-slate-700/80 bg-slate-900 p-4 shadow-2xl shadow-black/40">
+    <div className="fixed bottom-4 left-4 z-40 w-80 border border-hair-amber/60 bg-ink p-4 shadow-2xl shadow-black/60">
       {phase.kind === "available" && (
         <>
-          <p className="text-sm font-semibold text-slate-100">
-            Outfitter {phase.version} is available
+          <p className="text-[11px] font-bold uppercase tracking-[3px] text-paper-hi">
+            Outfitter {phase.version} <span className="text-amber">available</span>
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="mt-1.5 font-serif text-xs italic leading-relaxed text-mute">
             {platform === "windows"
               ? "Outfitter will close, apply the update, and reopen."
               : "Downloads in the background — you choose when to restart."}
           </p>
           {platform === "windows" && opsBusy ? (
-            <p className="mt-3 text-xs font-medium text-amber-400/90">
-              Waiting for package operations to finish…
+            <p className="obs-pulse mt-3 text-[10px] uppercase tracking-[2px] text-amber">
+              Waiting for package operations…
             </p>
           ) : (
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3.5 flex gap-5">
               <button
                 type="button"
                 onClick={() => void startInstall()}
-                className="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sky-500"
+                className="border-b border-hair-amber pb-1 text-[10.5px] uppercase tracking-[3px] text-amber transition-all hover:border-amber-hi hover:tracking-[4px] hover:text-amber-hi"
               >
                 Install update
               </button>
@@ -112,7 +112,7 @@ export default function UpdateBanner() {
                   dismissedRef.current = phase.version;
                   setPhase({ kind: "hidden" });
                 }}
-                className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200"
+                className="border-b border-transparent pb-1 text-[10.5px] uppercase tracking-[3px] text-mute transition-colors hover:text-paper"
               >
                 Later
               </button>
@@ -123,20 +123,22 @@ export default function UpdateBanner() {
 
       {phase.kind === "downloading" && (
         <>
-          <p className="text-sm font-semibold text-slate-100">Downloading update…</p>
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
+          <p className="text-[11px] font-bold uppercase tracking-[3px] text-paper-hi">
+            Downloading update
+          </p>
+          <div className="mt-3.5 h-px w-full overflow-hidden bg-hair">
             {phase.percent === null ? (
-              <div className="h-full w-1/3 animate-pulse rounded-full bg-sky-600" />
+              <div className="obs-pulse h-full w-1/3 bg-amber" />
             ) : (
               <div
-                className="h-full rounded-full bg-sky-600 transition-[width]"
+                className="h-full bg-amber transition-[width]"
                 style={{ width: `${phase.percent}%` }}
               />
             )}
           </div>
           {phase.percent !== null && (
-            <p className="mt-1.5 text-right text-[11px] tabular-nums text-slate-500">
-              {phase.percent}%
+            <p className="mt-2 text-right font-mono text-[11px] tracking-[2px] text-amber">
+              {String(phase.percent).padStart(3, "0")}%
             </p>
           )}
         </>
@@ -144,34 +146,36 @@ export default function UpdateBanner() {
 
       {phase.kind === "installing" && (
         <>
-          <p className="text-sm font-semibold text-slate-100">Installing update…</p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="text-[11px] font-bold uppercase tracking-[3px] text-paper-hi">
+            Installing update
+          </p>
+          <p className="mt-1.5 font-serif text-xs italic leading-relaxed text-mute">
             Outfitter will close and reopen itself.
           </p>
-          <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-slate-800">
-            <div className="h-full w-full animate-pulse rounded-full bg-sky-600" />
+          <div className="mt-3.5 h-px w-full overflow-hidden bg-hair">
+            <div className="obs-pulse h-full w-full bg-amber" />
           </div>
         </>
       )}
 
       {phase.kind === "ready" && (
         <>
-          <p className="text-sm font-semibold text-slate-100">
+          <p className="text-[11px] font-bold uppercase tracking-[3px] text-paper-hi">
             Ready to update to {phase.version}
           </p>
-          <p className="mt-1 text-xs leading-relaxed text-slate-400">
+          <p className="mt-1.5 font-serif text-xs italic leading-relaxed text-mute">
             The update installs when Outfitter restarts.
           </p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3.5 flex gap-5">
             {opsBusy ? (
-              <p className="text-xs font-medium text-amber-400/90">
-                Waiting for package operations to finish…
+              <p className="obs-pulse text-[10px] uppercase tracking-[2px] text-amber">
+                Waiting for package operations…
               </p>
             ) : (
               <button
                 type="button"
                 onClick={() => void relaunchApp()}
-                className="rounded-lg bg-sky-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-sky-500"
+                className="border-b border-hair-amber pb-1 text-[10.5px] uppercase tracking-[3px] text-amber transition-all hover:border-amber-hi hover:tracking-[4px] hover:text-amber-hi"
               >
                 Restart now
               </button>
@@ -182,7 +186,7 @@ export default function UpdateBanner() {
                 dismissedRef.current = phase.version;
                 setPhase({ kind: "hidden" });
               }}
-              className="rounded-lg px-3 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200"
+              className="border-b border-transparent pb-1 text-[10.5px] uppercase tracking-[3px] text-mute transition-colors hover:text-paper"
             >
               On next launch
             </button>
@@ -192,14 +196,16 @@ export default function UpdateBanner() {
 
       {phase.kind === "error" && (
         <>
-          <p className="text-sm font-semibold text-red-400">Update failed</p>
-          <p className="mt-1 break-words text-xs leading-relaxed text-slate-400">
+          <p className="text-[11px] font-bold uppercase tracking-[3px] text-coral">
+            Update failed
+          </p>
+          <p className="mt-1.5 break-words font-serif text-xs italic leading-relaxed text-mute">
             {phase.message}
           </p>
           <button
             type="button"
             onClick={() => setPhase({ kind: "hidden" })}
-            className="mt-3 rounded-lg px-3 py-1.5 text-xs font-medium text-slate-400 transition-colors hover:text-slate-200"
+            className="mt-3.5 border-b border-transparent pb-1 text-[10.5px] uppercase tracking-[3px] text-mute transition-colors hover:text-paper"
           >
             Dismiss
           </button>
