@@ -45,12 +45,18 @@ importers:
       '@vitejs/plugin-react':
         specifier: ^4.6.0
         version: 4.7.0(vite@7.3.6(jiti@2.7.0)(lightningcss@1.32.0))
+      '@workos-inc/authkit-js':
+        specifier: 0.20.1
+        version: 0.20.1
       ajv:
         specifier: ^8.20.0
         version: 8.20.0
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
+      esbuild:
+        specifier: 0.28.1
+        version: 0.28.1
       sharp:
         specifier: ^0.35.2
         version: 0.35.2
@@ -1074,6 +1080,9 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
+
+  '@workos-inc/authkit-js@0.20.1':
+    resolution: {integrity: sha512-ThIC/LrN2I9QbdJFCLmCNW6YAwOMmO7IYDz+KKN+gV9lUpY6grRU7dxfb6tjt0vNK8adQ9mSpNRoRQQFuEDGRQ==}
 
   ajv-formats@3.0.1:
     resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}
@@ -2206,6 +2215,8 @@ snapshots:
       vite: 7.3.6(jiti@2.7.0)(lightningcss@1.32.0)
     transitivePeerDependencies:
       - supports-color
+
+  '@workos-inc/authkit-js@0.20.1': {}
 
   ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:

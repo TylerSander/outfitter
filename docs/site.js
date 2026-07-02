@@ -1,9 +1,14 @@
 /* ============================================================
-   OUTFITTER SITE — shared runtime for all pages.
-   Handles: WorkOS AuthKit sign-in (PKCE public client), the
-   signed-in indicator in the nav, the downloads/release views
+   OUTFITTER SITE — shared runtime for all pages (ES module).
+   Auth is WorkOS AuthKit via the official @workos-inc/authkit-js
+   SDK (self-hosted pinned bundle in vendor/authkit.js — regenerate
+   with `pnpm bundle:authkit`). Sign-in/sign-up happen on WorkOS's
+   hosted auth page; the SDK handles PKCE, the ?code= callback,
+   session refresh, and a real sign-out of the hosted session.
+   Also here: nav signed-in indicator, downloads/release views
    (GitHub Releases API, rendered on-site), and footer links.
    ============================================================ */
+import { createClient } from "./vendor/authkit.js";
 
 const REPO = "TylerSander/outfitter";
 // Paste the Discord invite URL here once the server exists; until then the
@@ -11,11 +16,9 @@ const REPO = "TylerSander/outfitter";
 const DISCORD_INVITE = "";
 
 const WORKOS_CLIENT_ID = "client_01KWGH1817P2XJQY5D2ANQZCJ7";
-const AUTH_BASE = "https://api.workos.com/user_management";
 // The directory root is what's registered as the redirect URI in WorkOS,
 // so the callback always lands on index.html and gets forwarded to Account.
 const REDIRECT_URI = new URL(".", location.href).href;
-const SESSION_KEY = "outfitter.session";
 const AUTH_ERR_KEY = "outfitter.authError";
 
 const byId = (id) => document.getElementById(id);
@@ -33,72 +36,39 @@ const safeUrl = (u) => {
   } catch { return "#"; }
 };
 
-/* ---------- session ---------- */
-function readSession() {
-  const raw = localStorage.getItem(SESSION_KEY);
-  if (!raw) return null;
+/* ---------- auth (WorkOS AuthKit SDK) ---------- */
+let authkit = null;
+
+async function initAuth(hadCode) {
   try {
-    return JSON.parse(raw);
-  } catch {
-    localStorage.removeItem(SESSION_KEY); // corrupt value shouldn't brick the UI
-    return null;
+    authkit = await createClient(WORKOS_CLIENT_ID, {
+      redirectUri: REDIRECT_URI,
+      // Runs after the SDK finishes the code exchange on the callback page.
+      onRedirectCallback: () => {
+        if (!/account\.html$/.test(location.pathname)) location.replace("account.html");
+        else { renderNavState(); renderAccount(); }
+      },
+    });
+  } catch (e) {
+    authkit = null;
+    if (hadCode) sessionStorage.setItem(AUTH_ERR_KEY, "Sign-in could not be completed — please try again.");
+  }
+  // A callback that produced no user means the exchange failed silently.
+  if (hadCode && authkit && !authkit.getUser() && !/account\.html$/.test(location.pathname)) {
+    sessionStorage.setItem(AUTH_ERR_KEY, "Sign-in could not be completed — please try again.");
+    location.replace("account.html");
   }
 }
 
-/* ---------- WorkOS AuthKit, PKCE public client ---------- */
-const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)))
-  .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-
-async function startAuth(screenHint) {
-  const verifier = b64url(crypto.getRandomValues(new Uint8Array(48)).buffer);
-  sessionStorage.setItem("pkce_verifier", verifier);
-  // CSRF defense: a random state echoed back and verified on the callback.
-  const state = b64url(crypto.getRandomValues(new Uint8Array(16)).buffer);
-  sessionStorage.setItem("pkce_state", state);
-  const challenge = b64url(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier)));
-  const p = new URLSearchParams({
-    response_type: "code",
-    client_id: WORKOS_CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
-    provider: "authkit",
-    screen_hint: screenHint,
-    state,
-    code_challenge: challenge,
-    code_challenge_method: "S256",
-  });
-  location.assign(`${AUTH_BASE}/authorize?${p}`);
-}
-
-async function finishAuth(code) {
-  const verifier = sessionStorage.getItem("pkce_verifier");
-  if (!verifier) return;
-  sessionStorage.removeItem("pkce_verifier");
-  const res = await fetch(`${AUTH_BASE}/authenticate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      grant_type: "authorization_code",
-      client_id: WORKOS_CLIENT_ID,
-      code,
-      code_verifier: verifier,
-    }),
-  });
-  if (!res.ok) throw new Error(`sign-in exchange failed (${res.status})`);
-  const data = await res.json();
-  localStorage.setItem(SESSION_KEY, JSON.stringify({
-    email: data.user && data.user.email,
-    userId: data.user && data.user.id,
-    at: Date.now(),
-  }));
-}
+const currentUser = () => (authkit ? authkit.getUser() : null);
 
 /* ---------- nav: signed-in indicator on the Account link ---------- */
 function renderNavState() {
   const dot = byId("nav-dot");
   if (!dot) return;
-  const s = readSession();
-  dot.classList.toggle("on", !!s);
-  dot.title = s ? `Signed in as ${s.email || "your account"}` : "Not signed in";
+  const u = currentUser();
+  dot.classList.toggle("on", !!u);
+  dot.title = u ? `Signed in as ${u.email || "your account"}` : "Not signed in";
   const link = dot.closest("a");
   if (link) link.setAttribute("aria-label", dot.title);
 }
@@ -107,22 +77,21 @@ function renderNavState() {
 function renderAccount() {
   const controls = byId("acct-controls");
   if (!controls) return;
-  const s = readSession();
-  if (s) {
-    controls.innerHTML = `<p class="signed">✓ signed in as ${esc(s.email || s.userId || "your account")}</p>
+  const u = currentUser();
+  if (u) {
+    controls.innerHTML = `<p class="signed">✓ signed in as ${esc(u.email || "your account")}</p>
       <p style="font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--mute)">
       Your account is ready — sign in with the same email inside the Outfitter app.</p>
       <button class="btn quiet" id="signout">Sign out</button>`;
-    byId("signout").onclick = () => {
-      localStorage.removeItem(SESSION_KEY);
-      renderAccount();
-      renderNavState();
-    };
-  } else {
+    byId("signout").onclick = () =>
+      authkit.signOut({ returnTo: new URL("account.html", REDIRECT_URI).href });
+  } else if (authkit) {
     controls.innerHTML = `<button class="btn" id="signup">Create account</button>
       <button class="btn quiet" id="signin" style="margin-left:26px">Sign in</button>`;
-    byId("signup").onclick = () => startAuth("sign-up");
-    byId("signin").onclick = () => startAuth("sign-in");
+    byId("signup").onclick = () => authkit.signUp();
+    byId("signin").onclick = () => authkit.signIn();
+  } else {
+    controls.innerHTML = `<p class="err">Sign-in is temporarily unavailable — please refresh in a minute.</p>`;
   }
   const err = sessionStorage.getItem(AUTH_ERR_KEY);
   if (err) {
@@ -251,33 +220,27 @@ function applyDiscordLink() {
 
 /* ---------- boot ---------- */
 (async () => {
-  const params = new URLSearchParams(location.search);
-  const code = params.get("code");
-  if (code) {
-    // WorkOS redirects to the site root; finish the exchange here, then
-    // land the visitor on the Account page whichever page this is.
-    const expected = sessionStorage.getItem("pkce_state");
-    sessionStorage.removeItem("pkce_state");
-    if (!expected || params.get("state") !== expected) {
-      sessionStorage.setItem(AUTH_ERR_KEY, "Sign-in could not be verified (state mismatch) — please try again.");
-    } else {
-      try {
-        await finishAuth(code);
-      } catch (e) {
-        sessionStorage.setItem(AUTH_ERR_KEY, `${e.message} — try again.`);
-      }
-    }
-    history.replaceState(null, "", location.pathname);
-    if (!/account\.html$/.test(location.pathname)) { location.replace("account.html"); return; }
-  }
   // Old one-page anchors still arrive from external links — forward them.
   if (/(^|\/)(index\.html)?$/.test(location.pathname)) {
     const map = { "#about": "about.html", "#downloads": "downloads.html", "#account": "account.html", "#feedback": "about.html" };
     if (map[location.hash]) { location.replace(map[location.hash]); return; }
   }
-  renderNavState();
+
+  // Leftovers from the pre-SDK hand-rolled auth.
+  localStorage.removeItem("outfitter.session");
+  sessionStorage.removeItem("pkce_verifier");
+  sessionStorage.removeItem("pkce_state");
+
+  // Non-auth features never wait on WorkOS.
   applyDiscordLink();
-  renderAccount();
   if (byId("dl-grid")) loadDownloads();
   if (byId("home-version")) loadHomeVersion();
+
+  const hadCode = new URLSearchParams(location.search).has("code");
+  await initAuth(hadCode);
+  renderNavState();
+  renderAccount();
+
+  // Handy for debugging from the console; holds no secrets.
+  window.outfitterAuth = authkit;
 })();

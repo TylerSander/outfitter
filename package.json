@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "bundle:authkit": "esbuild scripts/authkit-entry.js --bundle --format=esm --minify --outfile=docs/vendor/authkit.js --banner:js=\"/* @workos-inc/authkit-js (version pinned in package.json) - official WorkOS AuthKit SDK, self-hosted. Regenerate: pnpm bundle:authkit */\""
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
@@ -24,8 +25,10 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
+    "@workos-inc/authkit-js": "0.20.1",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
+    "esbuild": "0.28.1",
     "sharp": "^0.35.2",
     "tailwindcss": "^4.3.2",
     "typescript": "~5.8.3",
